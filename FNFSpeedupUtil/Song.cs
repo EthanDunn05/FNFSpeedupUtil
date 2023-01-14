@@ -1,6 +1,6 @@
-﻿using FNF_Speedup_Util.Helpers;
+﻿using FNFSpeedupUtil.Helpers;
 
-namespace FNF_Speedup_Util;
+namespace FNFSpeedupUtil;
 
 /// <summary>
 /// Has all of the information of the song files.

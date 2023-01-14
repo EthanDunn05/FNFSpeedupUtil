@@ -1,6 +1,6 @@
 ﻿using Xabe.FFmpeg;
 
-namespace FNF_Speedup_Util.Modifier;
+namespace FNFSpeedupUtil.Modifier;
 
 public class MusicModifier
 {

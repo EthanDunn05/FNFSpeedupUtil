@@ -1,4 +1,4 @@
-﻿namespace FNF_Speedup_Util.Helpers;
+﻿namespace FNFSpeedupUtil.Helpers;
 
 /// <summary>
 /// Helper class for getting input from the user and reading

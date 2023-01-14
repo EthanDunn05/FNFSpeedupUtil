@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FNF_Speedup_Util.Modifier;
+namespace FNFSpeedupUtil.Modifier;
 
 /// <summary>
 /// Used for editing charts.

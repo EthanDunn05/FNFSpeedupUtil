@@ -1,4 +1,4 @@
-﻿namespace FNF_Speedup_Util.Helpers;
+﻿namespace FNFSpeedupUtil.Helpers;
 
 public static class DirectoryHelper
 {

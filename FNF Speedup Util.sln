@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FNF Speedup Util", "FNF Speedup Util\FNF Speedup Util.csproj", "{2D6D8E26-2D41-496D-9BF1-29AE51681AB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FNFSpeedupUtil", "FNFSpeedupUtil\FNFSpeedupUtil.csproj", "{2D6D8E26-2D41-496D-9BF1-29AE51681AB2}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

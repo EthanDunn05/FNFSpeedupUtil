@@ -1,5 +1,5 @@
-﻿using FNF_Speedup_Util.Helpers;
-using FNF_Speedup_Util.Modifier;
+﻿using FNFSpeedupUtil.Helpers;
+using FNFSpeedupUtil.Modifier;
 using Xabe.FFmpeg;
 
 Run().GetAwaiter().GetResult();
