@@ -1,42 +1,41 @@
-﻿using FNFSpeedupUtil.Helpers;
+﻿using System.Reflection;
+using FNFSpeedupUtil.Helpers;
+using FNFSpeedupUtil.Menu;
+using FNFSpeedupUtil.Menu.Pages;
 using FNFSpeedupUtil.Modifier;
 using Xabe.FFmpeg;
+using Xabe.FFmpeg.Downloader;
 
 Run().GetAwaiter().GetResult();
 
 async Task Run()
 {
+    Console.WriteLine();
+    Console.WriteLine(new string('=', Console.WindowWidth));
+    Console.WriteLine();
+    
+    Console.WriteLine("AcidAssassin's FNF Speedup Util v0.0.1");
+    
+    Console.WriteLine();
+    Console.WriteLine(new string('=', Console.WindowWidth));
+    Console.WriteLine();
+    
+    LoadFfmpeg();
+    var modPath = InputHandler.PromptDirectory("Enter the mod folder");
+
+    while (true)
+    {
+        var menu = new MainMenuPage(modPath);
+        menu.Open();
+    }
+}
+
+async void LoadFfmpeg()
+{
     // Find ffmpeg
     var path = Environment.GetEnvironmentVariable("PATH");
     var paths = path.Split(Path.PathSeparator);
-    var ffmpegPath = paths.First(s => s.Contains("ffmpeg", StringComparison.OrdinalIgnoreCase));
-    FFmpeg.SetExecutablesPath(ffmpegPath);
-
-    // Get the mod path
-    var modPath = ModDirectoryHelper.InputModFolder();
-
-    // Select a song
-    var songs = ModDirectoryHelper.FindSongs(modPath);
-    var song = ModDirectoryHelper.InputSpecificSong(songs);
-
-    // Refresh the backup to reset the chart
-    song.LoadBackup();
-    song.MakeBackup();
-
-    var speedModifier = ModDirectoryHelper.InputSpeedModifier();
-
-    Console.WriteLine();
+    var ffmpegPath = paths.FirstOrDefault(s => s.Contains("ffmpeg", StringComparison.OrdinalIgnoreCase));
     
-    // Modify all the difficulties
-    foreach (var diff in song.DifficultyPaths)
-    {
-        new ChartModifier(diff).ModifySpeed(speedModifier);
-    }
-
-    // Modify the events file if it exists
-    if (song.EventsPath != null) new ChartModifier(song.EventsPath).ModifySpeed(speedModifier);
-
-    // Modify the music
-    await new MusicModifier(song.InstPath).Modify(speedModifier);
-    await new MusicModifier(song.VoicesPath).Modify(speedModifier);
+    FFmpeg.SetExecutablesPath(ffmpegPath);
 }

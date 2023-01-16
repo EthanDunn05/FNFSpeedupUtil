@@ -11,38 +11,49 @@ public class Song
     /// The song name (unformatted).
     /// </summary>
     public string Name { get; }
-    
+
     /// <summary>
     /// The path to the song's data folder. Holds the chart
     /// files and the events file.
     /// </summary>
     public string DataPath { get; }
-    
+
     /// <summary>
     /// The path to the song's song folder. Holds the music file.
     /// </summary>
     public string SongPath { get; }
 
+    public bool HasBackup
+    {
+        get
+        {
+            var dataBackup = Path.Join(DataPath, @"/backup");
+            var songBackup = Path.Join(SongPath, @"/backup");
+
+            return Directory.Exists(songBackup) && Directory.Exists(dataBackup);
+        }
+    }
+
     /// <summary>
     /// Path to the instrumental file.
     /// </summary>
     public string InstPath => Path.Join(SongPath, @"/Inst.ogg");
-    
+
     /// <summary>
     /// Path to the voices file.
     /// </summary>
     public string VoicesPath => Path.Join(SongPath, @"/Voices.ogg");
-    
+
     /// <summary>
     /// A list of the paths to all the difficulties that the song has.
     /// </summary>
     public List<string> DifficultyPaths { get; }
-    
+
     /// <summary>
     /// The path to the events file. Can be null.
     /// </summary>
     public string? EventsPath { get; }
-    
+
     public Song(string name, string dataPath, string songPath)
     {
         Name = name;
@@ -77,10 +88,7 @@ public class Song
     {
         var dataBackup = Path.Join(DataPath, @"/backup");
         var songBackup = Path.Join(SongPath, @"/backup");
-        
-        if (Directory.Exists(songBackup)) return;
-        if (Directory.Exists(dataBackup)) return;
-        
+
         DirectoryHelper.CopyDirectory(DataPath, dataBackup, false);
         DirectoryHelper.CopyDirectory(SongPath, songBackup, false);
     }
@@ -93,10 +101,9 @@ public class Song
     {
         var dataBackup = Path.Join(DataPath, @"/backup");
         var songBackup = Path.Join(SongPath, @"/backup");
-        
-        if (!Directory.Exists(songBackup)) return;
-        if (!Directory.Exists(dataBackup)) return;
-        
+
+        if (!HasBackup) return;
+
         DirectoryHelper.CopyDirectory(dataBackup, DataPath, false);
         DirectoryHelper.CopyDirectory(songBackup, SongPath, false);
     }

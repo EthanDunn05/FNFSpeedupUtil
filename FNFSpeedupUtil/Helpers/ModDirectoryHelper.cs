@@ -8,25 +8,6 @@
 public static class ModDirectoryHelper
 {
     /// <summary>
-    /// Gets the path of the mod folder from the user.
-    /// Retries until a valid directory is given.
-    /// </summary>
-    /// <returns>The path to the mod folder</returns>
-    public static string InputModFolder()
-    {
-        while (true)
-        {
-            Console.WriteLine("Enter the path to mod's folder");
-            var path = @"" + Console.ReadLine();
-
-            if (Directory.Exists(path)) return path;
-
-            // File doesn't exist
-            Console.WriteLine("Folder not found, please try again");
-        }
-    }
-
-    /// <summary>
     /// Finds all of the songs in the given mod.
     /// </summary>
     /// <param name="modPath">The path to the mod folder</param>

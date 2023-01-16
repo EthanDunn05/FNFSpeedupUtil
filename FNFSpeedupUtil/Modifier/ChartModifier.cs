@@ -48,9 +48,23 @@ public class ChartModifier
             ModifySectionSpeed(section, multiplier, currentBpm);
         }
 
+        var events = song["events"];
+        if (events != null)
+        {
+            foreach (var eventData in (JArray) events)
+            {
+                ModifyEvent((JArray) eventData, multiplier);
+            }
+        }
+
         // Write the chart!
         File.WriteAllText(ChartPath, Chart.ToString(Formatting.Indented));
-        Console.WriteLine("\tDone!");
+    }
+    
+    private static void ModifyEvent(JContainer eventData, double multiplier)
+    {
+        var time = (double) eventData[0];
+        eventData[0] = time / multiplier;
     }
 
     private static void ModifySectionSpeed(JToken section, double multiplier, double currentBpm)
@@ -115,8 +129,10 @@ public class ChartModifier
         {
             if (!(e.GetType() == typeof(ArgumentNullException)))
             {
-                Console.WriteLine($"\tFailed to modify property [{childName}] ({parent[childName]}) of: {parent.Path}");
-                Console.WriteLine("\t" + e.Message);
+                Console.WriteLine($"WARNING: Failed to modify property [{childName}] ({parent[childName]}) of: {parent.Path}");
+#if DEBUG
+                Console.WriteLine(e);
+#endif
             }
         }
     }
@@ -132,8 +148,10 @@ public class ChartModifier
         {
             if (!(e.GetType() == typeof(ArgumentNullException)))
             {
-                Console.WriteLine($"\tFailed to modify element [{index}] ({parent[index]}) of: {parent.Path}");
-                Console.WriteLine("\t" + e.Message);
+                Console.WriteLine($"WARNING: Failed to modify element [{index}] ({parent[index]}) of: {parent.Path}");
+#if DEBUG
+                Console.WriteLine(e);
+#endif
             }
         }
     }
