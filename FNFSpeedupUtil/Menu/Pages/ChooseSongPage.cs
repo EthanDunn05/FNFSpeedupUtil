@@ -17,9 +17,15 @@ public class ChooseSongPage : Page
         var songs = ModDirectoryHelper.FindSongs(ModPath);
 
         // Select the song to modify
-        var songNames = songs.Select(MakeSongDisplayName);
+        var songNames = songs.Select(MakeSongDisplayName).ToList();
+        songNames.Add("Back");
         
         var songSelection = InputHandler.PromptList("What song to modify?", songNames);
+        
+        // Back was selected
+        if (songSelection == songNames.Count - 1)
+            return;
+        
         var song = songs[songSelection];
         
         Navigate(new ModifySongPage(song));

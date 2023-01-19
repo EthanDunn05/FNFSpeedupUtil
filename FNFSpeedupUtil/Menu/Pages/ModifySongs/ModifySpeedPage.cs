@@ -33,7 +33,7 @@ public class ModifySpeedPage : Page
         }).Wait();
         
         // Update the modification file
-        Song.ModificationData.SpeedModifier = speed;
+        Song.ModificationData.SpeedModifier *= speed;
         Song.UpdateModificationFile();
 
         Console.WriteLine("Done Modifying Song!");

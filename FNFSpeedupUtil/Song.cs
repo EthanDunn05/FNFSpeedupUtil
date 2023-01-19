@@ -23,7 +23,7 @@ public class Song
     /// </summary>
     public string SongPath { get; }
 
-    public bool HasBackup => Directory.Exists(BackupDir);
+    public bool HasBackup => Directory.Exists(BackupDataPath);
 
     /// <summary>
     /// Path to the instrumental file.
@@ -47,11 +47,12 @@ public class Song
 
     public ModificationData ModificationData { get; private set; }
 
-    private string UtilityDataDir => Path.Join(DataPath, @"/SpeedupUtilFiles/");
+    private string UtilityDataPath => Path.Join(DataPath, @"/SpeedupUtilFiles/");
     
-    private string BackupDir => Path.Join(UtilityDataDir, @"/backup/");
+    private string BackupDataPath => Path.Join(UtilityDataPath, @"/backupData/");
+    private string BackupSongPath => Path.Join(UtilityDataPath, @"/backupSong/");
     
-    private string ModificationDataPath => Path.Join(UtilityDataDir, @"/modification-data.json");
+    private string ModificationDataPath => Path.Join(UtilityDataPath, @"/modification-data.json");
 
     public Song(string name, string dataPath, string songPath)
     {
@@ -67,7 +68,7 @@ public class Song
         EventsPath = dataFiles.FirstOrDefault(path => Path.GetFileName(path) == "events.json");
 
         // Create the utility folder if it doesn't exist
-        if (!Directory.Exists(UtilityDataDir)) Directory.CreateDirectory(UtilityDataDir);
+        if (!Directory.Exists(UtilityDataPath)) Directory.CreateDirectory(UtilityDataPath);
 
         // Read the modification data if it exists, or make a new one
         if (File.Exists(ModificationDataPath))
@@ -110,20 +111,8 @@ public class Song
     /// </summary>
     public void MakeBackup()
     {
-        if (!Directory.Exists(BackupDir)) Directory.CreateDirectory(BackupDir);
-
-        // Save difficulties
-        foreach (var diff in DifficultyPaths)
-        {
-            var backupFilePath = Path.Join(BackupDir, Path.GetFileName(diff));
-            File.Copy(diff, backupFilePath, true);
-        }
-
-        // Save music
-        File.Copy(Path.Join(SongPath, "Inst.ogg"), Path.Join(BackupDir, "Inst.ogg"), true);
-        
-        if(File.Exists(VoicesPath))
-            File.Copy(Path.Join(SongPath, "Voices.ogg"), Path.Join(BackupDir, "Voices.ogg"), true);
+        DirectoryHelper.CopyDirectory(DataPath, BackupDataPath, false);
+        DirectoryHelper.CopyDirectory(SongPath, BackupSongPath, false);
     }
 
     /// <summary>
@@ -132,24 +121,8 @@ public class Song
     /// </summary>
     public void LoadBackup()
     {
-        try
-        {
-            // Load difficulties
-            foreach (var diff in DifficultyPaths)
-            {
-                var backup = Path.Join(BackupDir, Path.GetFileName(diff));
-                File.Copy(backup, diff, true);
-            }
-
-            // Load music
-            File.Copy(Path.Join(BackupDir, "Inst.ogg"), Path.Join(SongPath, "Inst.ogg"), true);
-            File.Copy(Path.Join(BackupDir, "Voices.ogg"), Path.Join(SongPath, "Voices.ogg"), true);
-        }
-        catch (FileNotFoundException e)
-        {
-            // Catch when the backup doesn't exist
-            // Just Ignore it :P
-        }
+        DirectoryHelper.CopyDirectory(BackupDataPath, DataPath, false);
+        DirectoryHelper.CopyDirectory(BackupSongPath, SongPath, false);
 
         // Reset the modification file because the data should be reset
         ResetModificationFile();

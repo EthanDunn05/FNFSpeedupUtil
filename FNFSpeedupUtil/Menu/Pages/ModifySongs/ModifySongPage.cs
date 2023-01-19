@@ -16,7 +16,7 @@ public class ModifySongPage : Page
 
         NavigateOptions("What would you like to do to this song?", new Dictionary<string, Func<Page>?>
         {
-            {"Change Speed", () => new ModifySpeedPage(Song)},
+            {$"Change Speed ({Song.ModificationData.SpeedModifier}x)", () => new ModifySpeedPage(Song)},
             {"Change Scroll Speed", () => new ModifyScrollSpeedPage(Song)},
             {"Load Backup", () => new LoadSongBackupPage(Song)},
             {"Back", null}
