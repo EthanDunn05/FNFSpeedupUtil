@@ -3,20 +3,24 @@
 public abstract class Page
 {
     protected abstract void Render();
-    
-    protected static void Navigate(string navigationMessage, Dictionary<string, Func<Page>> pages)
+
+    protected void NavigateOptions(string navigationMessage, Dictionary<string, Func<Page>?> options)
     {
         Console.WriteLine();
         Console.WriteLine(new string('=', Console.WindowWidth));
         Console.WriteLine();
-        
-        var names = pages.Keys.ToList();
+
+        var names = options.Keys.ToList();
         var selection = InputHandler.PromptList(navigationMessage, names);
-        
-        Console.WriteLine();
-        Console.WriteLine(new string('=', Console.WindowWidth));
-        Console.WriteLine();
-        
-        pages[names[selection]]().Render();
+
+        var page = options[names[selection]];
+
+        if (page != null) Navigate(page());
+    }
+
+    protected void Navigate(Page pageTo)
+    {
+        pageTo.Render();
+        Render();
     }
 }

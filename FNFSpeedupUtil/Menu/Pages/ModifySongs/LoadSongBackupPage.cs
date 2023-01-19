@@ -1,4 +1,4 @@
-﻿namespace FNFSpeedupUtil.Menu.Pages;
+﻿namespace FNFSpeedupUtil.Menu.Pages.ModifySongs;
 
 public class LoadSongBackupPage : Page
 {

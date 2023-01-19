@@ -1,12 +1,12 @@
 ﻿using FNFSpeedupUtil.Modifier;
 
-namespace FNFSpeedupUtil.Menu.Pages;
+namespace FNFSpeedupUtil.Menu.Pages.ModifySongs;
 
-public class ModifySongSpeedPage : Page
+public class ModifySpeedPage : Page
 {
     private Song Song { get; }
 
-    public ModifySongSpeedPage(Song song)
+    public ModifySpeedPage(Song song)
     {
         Song = song;
     }
@@ -15,9 +15,7 @@ public class ModifySongSpeedPage : Page
     {
         var isPitched = InputHandler.PromptBool("Should the pitch of the song be changed? (Y/N)");
 
-        double speed;
-        if (isPitched) speed = PromptPitchedSpeedModifier();
-        else speed = PromptUnpitchedSpeedModifier();
+        var speed = isPitched ? PromptPitchedSpeedModifier() : PromptUnpitchedSpeedModifier();
 
         Song.LoadBackup();
         Song.MakeBackup();
@@ -34,10 +32,10 @@ public class ModifySongSpeedPage : Page
             await new MusicModifier(Song.InstPath).Modify(speed, isPitched);
             await new MusicModifier(Song.VoicesPath).Modify(speed, isPitched);
         }).Wait();
-        
+
         Console.WriteLine("Done Modifying Song!");
     }
-    
+
     // Kind of an ugly method, but whatever. It gets the job done
     private static double PromptPitchedSpeedModifier()
     {
@@ -54,7 +52,7 @@ Enter the song speed modifier:";
             Console.WriteLine("The speed you entered is invalid");
         }
     }
-    
+
     private static double PromptUnpitchedSpeedModifier()
     {
         const string message = @"1.0 is normal speed | max: 2.0, min: 0.5

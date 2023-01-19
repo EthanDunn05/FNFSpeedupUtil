@@ -16,15 +16,31 @@ public class ChartModifier
     /// <summary>
     /// The Json contents of the chart
     /// </summary>
-    private JObject Chart { get; }
+    public JObject Chart { get; }
 
     public ChartModifier(string chartPath)
     {
         ChartPath = chartPath;
-
-        Console.WriteLine($"Modifying chart: {Path.GetFileName(ChartPath)}");
+        
         var chartFileContents = File.ReadAllText(ChartPath);
         Chart = JObject.Parse(chartFileContents);
+    }
+
+    /// <summary>
+    /// Sets the scroll speed of a song.
+    /// </summary>
+    /// <param name="scrollSpeed">The new scroll speed</param>
+    public void SetScrollSpeed(double scrollSpeed)
+    {
+        Console.WriteLine($"Modifying chart: {Path.GetFileName(ChartPath)}");
+        var song = Chart["song"]!;
+        
+        // Set the new scroll speed
+        TryModifyJsonObjectProperty(song, "speed", speed => 
+            (JValue) scrollSpeed);
+        
+        // Write the chart!
+        File.WriteAllText(ChartPath, Chart.ToString(Formatting.Indented));
     }
 
     /// <summary>
@@ -33,6 +49,7 @@ public class ChartModifier
     /// <param name="multiplier">The value to multiply the speed by</param>
     public void ModifySpeed(double multiplier)
     {
+        Console.WriteLine($"Modifying chart: {Path.GetFileName(ChartPath)}");
         var song = Chart["song"]!;
 
         // Modify song bpm
@@ -48,6 +65,7 @@ public class ChartModifier
             ModifySectionSpeed(section, multiplier, currentBpm);
         }
 
+        // Modify the events
         var events = song["events"];
         if (events != null)
         {

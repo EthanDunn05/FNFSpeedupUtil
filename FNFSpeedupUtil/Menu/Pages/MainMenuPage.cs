@@ -17,9 +17,9 @@ public class MainMenuPage : Page
 
     protected override void Render()
     {
-        Navigate("What would you like to do?",new Dictionary<string, Func<Page>>
+        NavigateOptions("What would you like to do?",new Dictionary<string, Func<Page>?>
         {
-            {"Modify Song", () => new ModifySongPage(ModPath)}
+            {"Modify Song", () => new ChooseSongPage(ModPath)}
         });
     }
 }
