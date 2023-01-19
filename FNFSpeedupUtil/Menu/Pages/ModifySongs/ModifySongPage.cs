@@ -11,8 +11,6 @@ public class ModifySongPage : Page
 
     protected override void Render()
     {
-        
-
         // Automatically make a backup if one doesn't already exist
         if (!Song.HasBackup) Song.MakeBackup();
 

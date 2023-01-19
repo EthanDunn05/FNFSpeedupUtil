@@ -17,10 +17,19 @@ public class ChooseSongPage : Page
         var songs = ModDirectoryHelper.FindSongs(ModPath);
 
         // Select the song to modify
-        var songNames = songs.Select(s => s.Name);
+        var songNames = songs.Select(MakeSongDisplayName);
+        
         var songSelection = InputHandler.PromptList("What song to modify?", songNames);
         var song = songs[songSelection];
         
         Navigate(new ModifySongPage(song));
+    }
+
+    private static string MakeSongDisplayName(Song song)
+    {
+        var rawName = song.Name;
+        var speedMod = song.ModificationData.SpeedModifier;
+
+        return $"{rawName} ({speedMod}x)";
     }
 }

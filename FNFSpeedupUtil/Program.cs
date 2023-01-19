@@ -21,10 +21,11 @@ async Task Run()
     Console.WriteLine();
     
     LoadFfmpeg();
-    var modPath = InputHandler.PromptDirectory("Enter the mod folder");
 
     while (true)
     {
+        
+        var modPath = InputHandler.PromptDirectory("Enter the mod folder");
         var menu = new MainMenuPage(modPath);
         menu.Open();
     }

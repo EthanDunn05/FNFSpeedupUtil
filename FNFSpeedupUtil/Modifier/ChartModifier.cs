@@ -5,6 +5,7 @@ namespace FNFSpeedupUtil.Modifier;
 
 /// <summary>
 /// Used for editing charts.
+/// TODO: Replace with using JSON object serialization
 /// </summary>
 public class ChartModifier
 {
