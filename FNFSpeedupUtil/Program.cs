@@ -6,28 +6,24 @@ using FNFSpeedupUtil.Modifier;
 using Xabe.FFmpeg;
 using Xabe.FFmpeg.Downloader;
 
-Run().GetAwaiter().GetResult();
 
-async Task Run()
+Console.WriteLine();
+Console.WriteLine(new string('=', Console.WindowWidth));
+Console.WriteLine();
+
+Console.WriteLine("AcidAssassin's FNF Speedup Util v0.0.1");
+
+Console.WriteLine();
+Console.WriteLine(new string('=', Console.WindowWidth));
+Console.WriteLine();
+
+LoadFfmpeg();
+var modPath = InputHandler.PromptDirectory("Enter the mod folder");
+
+while (true)
 {
-    Console.WriteLine();
-    Console.WriteLine(new string('=', Console.WindowWidth));
-    Console.WriteLine();
-    
-    Console.WriteLine("AcidAssassin's FNF Speedup Util v0.0.1");
-    
-    Console.WriteLine();
-    Console.WriteLine(new string('=', Console.WindowWidth));
-    Console.WriteLine();
-    
-    LoadFfmpeg();
-    var modPath = InputHandler.PromptDirectory("Enter the mod folder");
-
-    while (true)
-    {
-        var menu = new MainMenuPage(modPath);
-        menu.Open();
-    }
+    var menu = new MainMenuPage(modPath);
+    menu.Open();
 }
 
 async void LoadFfmpeg()

@@ -1,4 +1,6 @@
-﻿using FNFSpeedupUtil.Helpers;
+﻿using FNFSpeedupUtil.ChartData;
+using FNFSpeedupUtil.Helpers;
+using Newtonsoft.Json;
 
 namespace FNFSpeedupUtil;
 
