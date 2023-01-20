@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json;
+﻿using FNFSpeedupUtil.ChartData;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace FNFSpeedupUtil.Modifier;
 
 /// <summary>
 /// Used for editing charts.
-/// TODO: Replace with using JSON object serialization
 /// </summary>
 public class ChartModifier
 {
@@ -17,14 +17,12 @@ public class ChartModifier
     /// <summary>
     /// The Json contents of the chart
     /// </summary>
-    public JObject Chart { get; }
+    public JsonChart Chart { get; }
 
     public ChartModifier(string chartPath)
     {
         ChartPath = chartPath;
-        
-        var chartFileContents = File.ReadAllText(ChartPath);
-        Chart = JObject.Parse(chartFileContents);
+        Chart = JsonChart.Deserialize(ChartPath);
     }
 
     /// <summary>
@@ -34,14 +32,9 @@ public class ChartModifier
     public void SetScrollSpeed(double scrollSpeed)
     {
         Console.WriteLine($"Modifying chart: {Path.GetFileName(ChartPath)}");
-        var song = Chart["song"]!;
-        
-        // Set the new scroll speed
-        TryModifyJsonObjectProperty(song, "speed", speed => 
-            (JValue) scrollSpeed);
-        
-        // Write the chart!
-        File.WriteAllText(ChartPath, Chart.ToString(Formatting.Indented));
+        var song = Chart.Song;
+        song.Speed = scrollSpeed;
+        Chart.Serialize(ChartPath);
     }
 
     /// <summary>
@@ -51,127 +44,65 @@ public class ChartModifier
     public void ModifySpeed(double multiplier)
     {
         Console.WriteLine($"Modifying chart: {Path.GetFileName(ChartPath)}");
-        var song = Chart["song"]!;
+        var song = Chart.Song;
 
         // Modify song bpm
-        TryModifyJsonObjectProperty(song, "bpm", bpm =>
-            (JValue) ((double) bpm * multiplier));
+        song.Bpm *= multiplier;
+        var currentBpm = song.Bpm;
 
-        var currentBpm = (double) song["bpm"]!;
-
-        // Read the sections
-        var sections = song["notes"]!;
+        // Modify the sections
+        var sections = song.Sections;
         foreach (var section in sections)
         {
-            ModifySectionSpeed(section, multiplier, currentBpm);
+            section.Bpm *= multiplier;
+            currentBpm = section.Bpm ?? currentBpm;
+
+            // Modify the notes
+            foreach (var note in section.SectionNotes)
+            {
+                note.NoteTime /= multiplier;
+
+                try
+                {
+                    note.SustainLength = ModifySustainLength(note.SustainLength, currentBpm, multiplier);
+                }
+                catch (Exception e)
+                {
+                    // Just ignore it
+                }
+            }
         }
 
         // Modify the events
-        var events = song["events"];
+        var events = song.Events;
         if (events != null)
-        {
-            foreach (var eventData in (JArray) events)
-            {
-                ModifyEvent((JArray) eventData, multiplier);
-            }
-        }
+            foreach (var eventData in events)
+                eventData.EventTime /= multiplier;
 
         // Write the chart!
-        File.WriteAllText(ChartPath, Chart.ToString(Formatting.Indented));
-    }
-    
-    private static void ModifyEvent(JContainer eventData, double multiplier)
-    {
-        var time = (double) eventData[0];
-        eventData[0] = time / multiplier;
+        Chart.Serialize(ChartPath);
     }
 
-    private static void ModifySectionSpeed(JToken section, double multiplier, double currentBpm)
+    /// <summary>
+    /// Modifies the length of a sustain note.
+    /// </summary>
+    /// <param name="originalLength">The original time the sustain is held for</param>
+    /// <param name="currentBpm">The current bpm (After modification) of the song</param>
+    /// <param name="multiplier">The speed multiplier to apply</param>
+    /// <returns>The modified length of the sustain note</returns>
+    private static int ModifySustainLength(double originalLength, double currentBpm, double multiplier)
     {
-        // Modify section bpm
-        TryModifyJsonObjectProperty(section, "bpm", bpm =>
-        {
-            var newBpm = (double) bpm * multiplier;
-            currentBpm = newBpm;
-            return (JValue) newBpm;
-        });
+        // A more complicated process is used here since just dividing the hold time
+        // doesn't work and I have no idea why...
+        // FNF sustains are wack
+        
+        var stepLength = 60 / currentBpm * 1000 / 4;
+        
+        var ogBeatsHeld = (int) (originalLength / stepLength);
+        var newBeatsHeld = Math.Floor(ogBeatsHeld / multiplier);
+        var extraTime = originalLength % stepLength / multiplier;
+        var newHoldTime = (int) (newBeatsHeld * stepLength + extraTime);
 
-
-        // Every section has notes even if it's empty
-        var notes = (JArray) section["sectionNotes"]!;
-        foreach (var noteToken in notes)
-        {
-            var note = (JArray) noteToken;
-            ModifyNoteSpeed(note, multiplier, currentBpm);
-        }
-    }
-
-    private static void ModifyNoteSpeed(JContainer note, double multiplier, double currentBpm)
-    {
-        const int timeIndex = 0;
-        const int posIndex = 1;
-        const int sustainIndex = 2;
-
-        // Event notes are on strum -1
-        var isEvent = (int) note[posIndex]! == -1;
-
-        // Modify note time
-        TryModifyJsonArrayElement(note, timeIndex, strumTime
-            => (JValue) ((double) strumTime / multiplier));
-
-        // Modify sustains
-        // Events can't be sustains so they use index 2 for event data
-        if (!isEvent)
-            TryModifyJsonArrayElement(note, sustainIndex, holdTime =>
-            {
-                // This process is to keep the sustains quantized
-                // Floor is used because ending early is better than late
-                var stepLength = 60 / currentBpm * 1000 / 4;
-
-                var holdBeats = (int) ((int) holdTime / stepLength);
-                var newHoldBeats = Math.Floor(holdBeats / multiplier);
-
-                var extraTime = (double) holdTime % stepLength / multiplier;
-                var newHoldTime = (int) (newHoldBeats * stepLength + extraTime);
-                return (JValue) newHoldTime;
-            });
-    }
-
-    private static void TryModifyJsonObjectProperty(JToken parent, string childName, Func<JValue, JValue> modification)
-    {
-        try
-        {
-            var child = (JValue) parent[childName]!;
-            parent[childName] = modification(child);
-        }
-        catch (Exception e)
-        {
-            if (!(e.GetType() == typeof(ArgumentNullException)))
-            {
-                Console.WriteLine($"WARNING: Failed to modify property [{childName}] ({parent[childName]}) of: {parent.Path}");
-#if DEBUG
-                Console.WriteLine(e);
-#endif
-            }
-        }
-    }
-
-    private static void TryModifyJsonArrayElement(JContainer parent, int index, Func<JValue, JValue> modification)
-    {
-        try
-        {
-            var child = (JValue) parent[index]!;
-            parent[index] = modification(child);
-        }
-        catch (Exception e)
-        {
-            if (!(e.GetType() == typeof(ArgumentNullException)))
-            {
-                Console.WriteLine($"WARNING: Failed to modify element [{index}] ({parent[index]}) of: {parent.Path}");
-#if DEBUG
-                Console.WriteLine(e);
-#endif
-            }
-        }
+        return newHoldTime;
     }
 }
