@@ -41,7 +41,7 @@ public class JsonNote : List<JValue>
     public double SustainLength
     {
         // Might not be a double such as in an event, so error check the cast
-        get => (double?)this[2] ?? throw new InvalidCastException();
+        get => (int?)this[2] ?? throw new InvalidCastException();
         set => this[2] = (JValue)value;
     }
 }

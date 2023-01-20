@@ -17,6 +17,12 @@ public class JsonSection
     public List<JsonNote> SectionNotes { get; set; }
     
     /// <summary>
+    /// The section bpm.
+    /// </summary>
+    [JsonProperty("bpm")]
+    public double? Bpm { get; set; }
+    
+    /// <summary>
     /// Hold the extra data since we can't be removing data
     /// </summary>
     [JsonExtensionData]
