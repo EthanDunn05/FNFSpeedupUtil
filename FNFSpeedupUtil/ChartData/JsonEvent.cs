@@ -9,21 +9,19 @@ namespace FNFSpeedupUtil.ChartData;
 /// is an IEnumerable to represent that.
 /// </summary>
 [JsonArray]
-public class JsonEvent : IEnumerable
+public class JsonEvent : List<JValue>
 {
-    private List<JValue> _data = new();
-
     /// <summary>
     /// The time the event triggers
     /// </summary>
     public double EventTime
     {
-        get => (double)_data[0];
-        set => _data[0] = (JValue)value;
+        get => (double)this[0];
+        set => this[0] = (JValue)value;
     }
 
     public IEnumerator GetEnumerator()
     {
-        return _data.GetEnumerator();
+        return this.GetEnumerator();
     }
 }

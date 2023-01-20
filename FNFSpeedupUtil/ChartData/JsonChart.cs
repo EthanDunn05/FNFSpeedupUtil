@@ -22,10 +22,10 @@ public class JsonChart
     [JsonExtensionData]
     public Dictionary<string, JToken> AdditionalData { get; set; }
 
-    public static JsonSong Deserialize(string chartPath)
+    public static JsonChart Deserialize(string chartPath)
     {
         var chartText = File.ReadAllText(chartPath);
-        return JsonConvert.DeserializeObject<JsonSong>(chartText) ?? throw new InvalidOperationException();
+        return JsonConvert.DeserializeObject<JsonChart>(chartText) ?? throw new InvalidOperationException();
     }
 
     public void Serialize(string chartPath)
