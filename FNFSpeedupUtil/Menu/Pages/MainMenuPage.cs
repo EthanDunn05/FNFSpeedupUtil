@@ -19,7 +19,9 @@ public class MainMenuPage : Page
     {
         NavigateOptions("What would you like to do?",new Dictionary<string, Func<Page>?>
         {
-            {"Modify Song", () => new ChooseSongPage(ModPath)}
+            {"Modify Song", () => new ChooseSongPage(ModPath)},
+            {"Load All Backups", () => new LoadAllBackups(ModPath) },
+            {"Choose New Mod", null}
         });
     }
 }

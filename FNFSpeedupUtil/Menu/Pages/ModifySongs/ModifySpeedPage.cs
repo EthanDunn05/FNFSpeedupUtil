@@ -17,9 +17,6 @@ public class ModifySpeedPage : Page
 
         var speed = isPitched ? PromptPitchedSpeedModifier() : PromptUnpitchedSpeedModifier();
 
-        Song.LoadBackup();
-        Song.MakeBackup();
-
         // Modify the difficulties
         foreach (var difficulty in Song.DifficultyPaths) new ChartModifier(difficulty).ModifySpeed(speed);
 
@@ -30,8 +27,14 @@ public class ModifySpeedPage : Page
         Task.Run(async () =>
         {
             await new MusicModifier(Song.InstPath).Modify(speed, isPitched);
-            await new MusicModifier(Song.VoicesPath).Modify(speed, isPitched);
+            
+            if (File.Exists(Song.VoicesPath))
+                await new MusicModifier(Song.VoicesPath).Modify(speed, isPitched);
         }).Wait();
+        
+        // Update the modification file
+        Song.ModificationData.SpeedModifier *= speed;
+        Song.UpdateModificationFile();
 
         Console.WriteLine("Done Modifying Song!");
     }

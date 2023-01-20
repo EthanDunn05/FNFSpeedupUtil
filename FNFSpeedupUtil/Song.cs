@@ -25,16 +25,7 @@ public class Song
     /// </summary>
     public string SongPath { get; }
 
-    public bool HasBackup
-    {
-        get
-        {
-            var dataBackup = Path.Join(DataPath, @"/backup");
-            var songBackup = Path.Join(SongPath, @"/backup");
-
-            return Directory.Exists(songBackup) && Directory.Exists(dataBackup);
-        }
-    }
+    public bool HasBackup => Directory.Exists(BackupDataPath);
 
     /// <summary>
     /// Path to the instrumental file.
@@ -56,6 +47,15 @@ public class Song
     /// </summary>
     public string? EventsPath { get; }
 
+    public ModificationData ModificationData { get; private set; }
+
+    private string UtilityDataPath => Path.Join(DataPath, @"/SpeedupUtilFiles/");
+    
+    private string BackupDataPath => Path.Join(UtilityDataPath, @"/backupData/");
+    private string BackupSongPath => Path.Join(UtilityDataPath, @"/backupSong/");
+    
+    private string ModificationDataPath => Path.Join(UtilityDataPath, @"/modification-data.json");
+
     public Song(string name, string dataPath, string songPath)
     {
         Name = name;
@@ -68,6 +68,14 @@ public class Song
 
         // Find the events
         EventsPath = dataFiles.FirstOrDefault(path => Path.GetFileName(path) == "events.json");
+
+        // Create the utility folder if it doesn't exist
+        if (!Directory.Exists(UtilityDataPath)) Directory.CreateDirectory(UtilityDataPath);
+
+        // Read the modification data if it exists, or make a new one
+        if (File.Exists(ModificationDataPath))
+            ModificationData = ModificationData.Deserialize(ModificationDataPath);
+        else ResetModificationFile();
     }
 
     /// <summary>
@@ -83,16 +91,30 @@ public class Song
     }
 
     /// <summary>
+    /// Resets the modification file. Effectively writes all properties to default.
+    /// </summary>
+    private void ResetModificationFile()
+    {
+        ModificationData = new ModificationData();
+        ModificationData.Serialize(ModificationDataPath);
+    }
+
+    /// <summary>
+    /// Re-serializes the modification file.
+    /// </summary>
+    public void UpdateModificationFile()
+    {
+        ModificationData.Serialize(ModificationDataPath);
+    }
+
+    /// <summary>
     /// Makes a backup of the data and song folders. Stores the
     /// backups in a subfolder of themselves called backup.
     /// </summary>
     public void MakeBackup()
     {
-        var dataBackup = Path.Join(DataPath, @"/backup");
-        var songBackup = Path.Join(SongPath, @"/backup");
-
-        DirectoryHelper.CopyDirectory(DataPath, dataBackup, false);
-        DirectoryHelper.CopyDirectory(SongPath, songBackup, false);
+        DirectoryHelper.CopyDirectory(DataPath, BackupDataPath, false);
+        DirectoryHelper.CopyDirectory(SongPath, BackupSongPath, false);
     }
 
     /// <summary>
@@ -101,12 +123,10 @@ public class Song
     /// </summary>
     public void LoadBackup()
     {
-        var dataBackup = Path.Join(DataPath, @"/backup");
-        var songBackup = Path.Join(SongPath, @"/backup");
+        DirectoryHelper.CopyDirectory(BackupDataPath, DataPath, false);
+        DirectoryHelper.CopyDirectory(BackupSongPath, SongPath, false);
 
-        if (!HasBackup) return;
-
-        DirectoryHelper.CopyDirectory(dataBackup, DataPath, false);
-        DirectoryHelper.CopyDirectory(songBackup, SongPath, false);
+        // Reset the modification file because the data should be reset
+        ResetModificationFile();
     }
 }
