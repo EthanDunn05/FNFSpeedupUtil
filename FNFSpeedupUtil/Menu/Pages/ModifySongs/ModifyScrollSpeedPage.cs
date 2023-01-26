@@ -24,7 +24,13 @@ public class ModifyScrollSpeedPage : Page
         var scrollSpeed = InputHandler.PromptDouble("What should the new scroll speed be?");
 
         foreach (var difficulty in Song.DifficultyPaths)
-            new ChartModifier(difficulty).SetScrollSpeed(scrollSpeed);
+        {
+            Console.WriteLine($"Modifying {Path.GetFileName(difficulty)}");
+            var chart = JsonChart.Deserialize(difficulty);
+            ChartModifier.SetScrollSpeed(chart, scrollSpeed);
+            chart.Serialize(difficulty);
+        }
+
 
         Console.WriteLine("Done changing scroll speed!");
     }

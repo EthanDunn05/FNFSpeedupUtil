@@ -2,26 +2,19 @@
 
 namespace FNFSpeedupUtil.Modifier;
 
-public class MusicModifier
+public static class MusicModifier
 {
-    private string SongPath { get; }
-
-    public MusicModifier(string songPath)
-    {
-        SongPath = songPath;
-    }
-
     /// <summary>
     /// 
     /// </summary>
     /// <param name="speedModification"></param>
-    public async Task Modify(double speedModification, bool changePitch)
+    public static async Task Modify(string songPath, double speedModification, bool changePitch)
     {
-        Console.WriteLine($"Modifying music: {Path.GetFileName(SongPath)}");
+        Console.WriteLine($"Modifying music: {Path.GetFileName(songPath)}");
 
         // Move file to temp location
         var bufferPath = Path.Join(Path.GetTempPath(), @"/temp.ogg");
-        File.Move(SongPath, bufferPath, true);
+        File.Move(songPath, bufferPath, true);
 
         // Get the audio streams and apply speed change
         var info = await FFmpeg.GetMediaInfo(bufferPath);
@@ -33,7 +26,7 @@ public class MusicModifier
         // Convert the temp file to the new modified version
         var conversion = FFmpeg.Conversions.New()
             .AddStream(audio)
-            .SetOutput(SongPath)
+            .SetOutput(songPath)
             .SetOverwriteOutput(true)
             .UseMultiThread(false)
             .SetPreset(ConversionPreset.Fast);
