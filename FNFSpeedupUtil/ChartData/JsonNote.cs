@@ -9,7 +9,7 @@ namespace FNFSpeedupUtil.ChartData;
 /// is an IEnumerable to represent that.
 /// </summary>
 [JsonArray]
-public class JsonNote : List<JValue>
+public class JsonNote : List<JToken>
 {
     /// <summary>
     /// The time the note is to be hit.
@@ -17,7 +17,7 @@ public class JsonNote : List<JValue>
     public double NoteTime
     {
         get => (double)this[0];
-        set => this[0] = (JValue)value;
+        set => this[0] = value;
     }
 
     /// <summary>
@@ -26,7 +26,7 @@ public class JsonNote : List<JValue>
     public int StrumPos
     {
         get => (int)this[1];
-        set => this[1] = (JValue)value;
+        set => this[1] = value;
     }
 
     /// <summary>
@@ -38,10 +38,10 @@ public class JsonNote : List<JValue>
     /// <summary>
     /// The length of the sustain. Will be 0 if the note is not a sustain.
     /// </summary>
-    public double SustainLength
+    public int SustainLength
     {
         // Might not be a double such as in an event, so error check the cast
         get => (int?)this[2] ?? throw new InvalidCastException();
-        set => this[2] = (JValue)value;
+        set => this[2] = value;
     }
 }

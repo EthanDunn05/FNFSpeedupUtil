@@ -14,7 +14,7 @@ public class JsonSong
     /// A list of all the sections in the chart.
     /// </summary>
     [JsonProperty("notes")]
-    public List<JsonSection> Sections { get; set; }
+    public List<JsonSection> Sections { get; set; } = new();
 
     /// <summary>
     /// The scroll speed of the chart.
@@ -40,5 +40,5 @@ public class JsonSong
     /// Often mods have more chart data specific to the mod so this holds all of that data.
     /// </summary>
     [JsonExtensionData]
-    public Dictionary<string, JToken> AdditionalData { get; set; }
+    public Dictionary<string, JToken> AdditionalData { get; set; } = new();
 }
