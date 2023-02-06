@@ -1,20 +1,21 @@
-﻿using FNFSpeedupUtil.Helpers;
+﻿using System.IO.Abstractions;
+using FNFSpeedupUtil.Helpers;
 using FNFSpeedupUtil.Menu.Pages.ModifySongs;
 
 namespace FNFSpeedupUtil.Menu.Pages;
 
 public class ChooseSongPage : Page
 {
-    private string ModPath { get; }
+    private IDirectoryInfo ModDir { get; }
 
-    public ChooseSongPage(string modPath)
+    public ChooseSongPage(IDirectoryInfo modDir)
     {
-        ModPath = modPath;
+        ModDir = modDir;
     }
 
     protected override void Render()
     {
-        var songs = ModDirectoryHelper.FindSongs(ModPath);
+        var songs = ModDirectoryHelper.FindSongs(ModDir);
 
         // Select the song to modify
         var songNames = songs.Select(MakeSongDisplayName).ToList();

@@ -14,18 +14,18 @@ public class ModifyScrollSpeedPage : Page
 
     protected override void Render()
     {
-        foreach (var difficulty in Song.DifficultyPaths)
+        foreach (var difficulty in Song.DifficultyFiles)
         {
             var chart = JsonChart.Deserialize(difficulty);
             Console.WriteLine(
-                $"Scroll speed: {Path.GetFileName(difficulty)} - {chart.Song.Speed}");
+                $"Scroll speed: {difficulty.Name} - {chart.Song.Speed}");
         }
 
         var scrollSpeed = InputHandler.PromptDouble("What should the new scroll speed be?");
 
-        foreach (var difficulty in Song.DifficultyPaths)
+        foreach (var difficulty in Song.DifficultyFiles)
         {
-            Console.WriteLine($"Modifying {Path.GetFileName(difficulty)}");
+            Console.WriteLine($"Modifying {difficulty.Name}");
             var chart = JsonChart.Deserialize(difficulty);
             ChartModifier.SetScrollSpeed(chart, scrollSpeed);
             chart.Serialize(difficulty);

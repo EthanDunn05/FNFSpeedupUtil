@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel;
+using System.IO.Abstractions;
 using Newtonsoft.Json;
 
 namespace FNFSpeedupUtil;
@@ -18,20 +19,21 @@ public class ModificationData
     /// <summary>
     /// Deserializes the modification data file.
     /// </summary>
-    /// <param name="dataPath">The path to the modification data json file</param>
+    /// <param name="dataFile">The path to the modification data json file</param>
     /// <returns>The deserialized contents of the inputted file</returns>
     /// <exception cref="InvalidDataException">
     /// Thrown if the data path exists, but could not be deserialized into the ModificationData type
     /// </exception>
-    public static ModificationData Deserialize(string dataPath)
+    public static ModificationData Deserialize(IFileInfo dataFile)
     {
-        var fileContents = File.ReadAllText(dataPath);
+        var fileSystem = dataFile.FileSystem;
+        var fileContents = fileSystem.File.ReadAllText(dataFile.FullName);
 
         // Funky syntax for type checking the deserialized object
         var deserialized = JsonConvert.DeserializeObject<ModificationData>(fileContents);
         if (deserialized == null)
         {
-            throw new InvalidDataException($"{dataPath} is not a valid modification data file");
+            throw new InvalidDataException($"{dataFile} is not a valid modification data file");
         }
 
         return deserialized;
@@ -40,10 +42,12 @@ public class ModificationData
     /// <summary>
     /// Serializes this modification data and writes it to the dataPath.
     /// </summary>
-    /// <param name="dataPath">The path the modification data should write to</param>
-    public void Serialize(string dataPath)
+    /// <param name="dataFile">The path the modification data should write to</param>
+    public void Serialize(IFileInfo dataFile)
     {
         var serialized = JsonConvert.SerializeObject(this);
-        File.WriteAllText(dataPath, serialized);
+
+        var fileSystem = dataFile.FileSystem;
+        fileSystem.File.WriteAllText(dataFile.FullName, serialized);
     }
 }

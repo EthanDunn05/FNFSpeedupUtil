@@ -1,4 +1,5 @@
-﻿using FNFSpeedupUtil.ChartData;
+﻿using System.IO.Abstractions;
+using FNFSpeedupUtil.ChartData;
 using FNFSpeedupUtil.Helpers;
 using Newtonsoft.Json;
 
@@ -18,75 +19,83 @@ public class Song
     /// The path to the song's data folder. Holds the chart
     /// files and the events file.
     /// </summary>
-    public string DataPath { get; }
+    public IDirectoryInfo DataDir { get; }
 
     /// <summary>
     /// The path to the song's song folder. Holds the music file.
     /// </summary>
-    public string SongPath { get; }
+    public IDirectoryInfo SongDir { get; }
 
-    public bool HasBackup => Directory.Exists(BackupDataPath);
+    public bool HasBackup => BackupDataDir.Exists;
 
     /// <summary>
     /// Path to the instrumental file.
     /// </summary>
-    public string InstPath => Path.Join(SongPath, @"/Inst.ogg");
+    public IFileInfo InstFile { get; }
 
     /// <summary>
     /// Path to the voices file.
     /// </summary>
-    public string VoicesPath => Path.Join(SongPath, @"/Voices.ogg");
+    public IFileInfo VoicesFile { get; }
 
     /// <summary>
     /// A list of the paths to all the difficulties that the song has.
     /// </summary>
-    public List<string> DifficultyPaths { get; }
+    public List<IFileInfo> DifficultyFiles { get; }
 
     /// <summary>
     /// The path to the events file. Can be null.
     /// </summary>
-    public string? EventsPath { get; }
+    public IFileInfo? EventsFile { get; }
 
     public ModificationData ModificationData { get; private set; }
 
-    private string UtilityDataPath => Path.Join(DataPath, @"/SpeedupUtilFiles/");
+    private IDirectoryInfo UtilityDataDir { get; }
     
-    private string BackupDataPath => Path.Join(UtilityDataPath, @"/backupData/");
-    private string BackupSongPath => Path.Join(UtilityDataPath, @"/backupSong/");
+    private IDirectoryInfo BackupDataDir { get; }
+    private IDirectoryInfo BackupSongDir { get; }
     
-    private string ModificationDataPath => Path.Join(UtilityDataPath, @"/modification-data.json");
+    private IFileInfo ModificationDataFile { get; }
 
-    public Song(string name, string dataPath, string songPath)
+    public Song(string name, IDirectoryInfo dataDir, IDirectoryInfo songDir)
     {
         Name = name;
-        DataPath = dataPath;
-        SongPath = songPath;
+        DataDir = dataDir;
+        SongDir = songDir;
+        
+        // Get all of the files and directories
+        var dataFiles = dataDir.GetFiles();
+        DifficultyFiles = dataFiles.Where(IsChartFile).ToList();
+        
+        EventsFile = dataFiles.FirstOrDefault(path => path.Name == "events.json");
 
-        // Find the difficulties
-        var dataFiles = Directory.GetFiles(dataPath);
-        DifficultyPaths = dataFiles.Where(IsChartFile).ToList();
+        InstFile = SongDir.File("Inst.ogg");
+        VoicesFile = SongDir.File("Voices.ogg");
+        
+        UtilityDataDir = DataDir.SubDirectory("SpeedupUtilFiles");
+        BackupDataDir = UtilityDataDir.SubDirectory("backupData");
+        BackupSongDir = UtilityDataDir.SubDirectory("backupSong");
 
-        // Find the events
-        EventsPath = dataFiles.FirstOrDefault(path => Path.GetFileName(path) == "events.json");
+        ModificationDataFile = UtilityDataDir.File("modification-data.json");
 
         // Create the utility folder if it doesn't exist
-        if (!Directory.Exists(UtilityDataPath)) Directory.CreateDirectory(UtilityDataPath);
+        if (!UtilityDataDir.Exists) UtilityDataDir.Create();
 
         // Read the modification data if it exists, or make a new one
-        if (File.Exists(ModificationDataPath))
-            ModificationData = ModificationData.Deserialize(ModificationDataPath);
+        if (ModificationDataFile.Exists)
+            ModificationData = ModificationData.Deserialize(ModificationDataFile);
         else ResetModificationFile();
     }
 
     /// <summary>
     /// Test if a path leads to a chart file
     /// </summary>
-    /// <param name="path">Path to the file to test</param>
+    /// <param name="file">Path to the file to test</param>
     /// <returns>Weather or not a file is a chart file</returns>
-    private bool IsChartFile(string path)
+    private bool IsChartFile(IFileInfo file)
     {
-        var followsNamingScheme = Path.GetFileName(path).StartsWith(Name);
-        var isJsonFile = Path.GetExtension(path) == ".json";
+        var followsNamingScheme = file.Name.StartsWith(Name);
+        var isJsonFile = file.Extension == ".json";
         return followsNamingScheme && isJsonFile;
     }
 
@@ -96,7 +105,7 @@ public class Song
     private void ResetModificationFile()
     {
         ModificationData = new ModificationData();
-        ModificationData.Serialize(ModificationDataPath);
+        ModificationData.Serialize(ModificationDataFile);
     }
 
     /// <summary>
@@ -104,7 +113,7 @@ public class Song
     /// </summary>
     public void UpdateModificationFile()
     {
-        ModificationData.Serialize(ModificationDataPath);
+        ModificationData.Serialize(ModificationDataFile);
     }
 
     /// <summary>
@@ -113,8 +122,8 @@ public class Song
     /// </summary>
     public void MakeBackup()
     {
-        DirectoryHelper.CopyDirectory(DataPath, BackupDataPath, false);
-        DirectoryHelper.CopyDirectory(SongPath, BackupSongPath, false);
+        DirectoryHelper.CopyDirectory(DataDir, BackupDataDir, false);
+        DirectoryHelper.CopyDirectory(SongDir, BackupSongDir, false);
     }
 
     /// <summary>
@@ -123,8 +132,8 @@ public class Song
     /// </summary>
     public void LoadBackup()
     {
-        DirectoryHelper.CopyDirectory(BackupDataPath, DataPath, false);
-        DirectoryHelper.CopyDirectory(BackupSongPath, SongPath, false);
+        DirectoryHelper.CopyDirectory(BackupDataDir, DataDir, false);
+        DirectoryHelper.CopyDirectory(BackupSongDir, SongDir, false);
 
         // Reset the modification file because the data should be reset
         ResetModificationFile();

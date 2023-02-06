@@ -19,7 +19,7 @@ public class ModifySpeedPage : Page
         var speed = isPitched ? PromptPitchedSpeedModifier() : PromptUnpitchedSpeedModifier();
 
         // Modify the difficulties
-        foreach (var difficulty in Song.DifficultyPaths)
+        foreach (var difficulty in Song.DifficultyFiles)
         {
             var chart = JsonChart.Deserialize(difficulty);
             ChartModifier.ModifySpeed(chart, speed);
@@ -27,20 +27,20 @@ public class ModifySpeedPage : Page
         }
 
         // Modify the events file if it exists
-        if (Song.EventsPath != null)
+        if (Song.EventsFile != null)
         {
-            var chart = JsonChart.Deserialize(Song.EventsPath);
+            var chart = JsonChart.Deserialize(Song.EventsFile);
             ChartModifier.ModifySpeed(chart, speed);
-            chart.Serialize(Song.EventsPath);
+            chart.Serialize(Song.EventsFile);
         }
 
         // Modify the music
         Task.Run(async () =>
         {
-            await MusicModifier.Modify(Song.InstPath, speed, isPitched);
+            await MusicModifier.Modify(Song.InstFile, speed, isPitched);
             
-            if (File.Exists(Song.VoicesPath))
-                await MusicModifier.Modify(Song.VoicesPath, speed, isPitched);
+            if (Song.VoicesFile.Exists)
+                await MusicModifier.Modify(Song.VoicesFile, speed, isPitched);
         }).Wait();
         
         // Update the modification file

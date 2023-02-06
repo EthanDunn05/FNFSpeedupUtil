@@ -1,19 +1,20 @@
-﻿using FNFSpeedupUtil.Helpers;
+﻿using System.IO.Abstractions;
+using FNFSpeedupUtil.Helpers;
 
 namespace FNFSpeedupUtil.Menu.Pages;
 
 public class LoadAllBackups : Page
 {
-    private string ModPath { get; }
+    private IDirectoryInfo ModDir { get; }
 
-    public LoadAllBackups(string modPath)
+    public LoadAllBackups(IDirectoryInfo modDir)
     {
-        ModPath = modPath;
+        ModDir = modDir;
     }
 
     protected override void Render()
     {
-        var songs = ModDirectoryHelper.FindSongs(ModPath);
+        var songs = ModDirectoryHelper.FindSongs(ModDir);
 
         foreach (var song in songs)
         {
