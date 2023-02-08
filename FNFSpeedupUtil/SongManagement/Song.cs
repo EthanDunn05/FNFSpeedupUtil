@@ -1,4 +1,4 @@
-﻿using System.IO.Abstractions;
+using System.IO.Abstractions;
 using FNFSpeedupUtil.Extensions;
 using FNFSpeedupUtil.JsonData;
 using FNFSpeedupUtil.JsonData.ChartData;
@@ -6,39 +6,28 @@ using FNFSpeedupUtil.JsonData.ChartData;
 namespace FNFSpeedupUtil.SongManagement;
 
 /// <summary>
-/// Manages the data of a song. Much of the data is managed through a save and load
-/// system to simplify managing files.
+/// Manages saving and loading data to the files
 /// </summary>
-public class Song
+public class Song : ISong
 {
     /// <summary>
     /// Contains all the files needed to do stuff
     /// </summary>
-    private SongFiles Files { get; }
+    private ISongFiles Files { get; }
 
-    /// <summary>
-    /// The name of the song
-    /// </summary>
+    /// <inheritdoc />
     public string Name { get; }
 
-    /// <summary>
-    /// Whether or not the song has an events chart
-    /// </summary>
+    /// <inheritdoc />
     public bool HasEventsChart => Files.EventsFile.Exists;
 
-    /// <summary>
-    /// The names of all the difficulty files.
-    /// </summary>
+    /// <inheritdoc />
     public List<string> DifficultyNames => Files.DifficultyFiles.Select(file => file.Name).ToList();
-    
-    /// <summary>
-    /// Expose the inst file
-    /// </summary>
+
+    /// <inheritdoc />
     public IFileInfo InstFile => Files.InstFile;
 
-    /// <summary>
-    /// Expose the voices file
-    /// </summary>
+    /// <inheritdoc />
     public IFileInfo VoicesFile => Files.VoicesFile;
 
     /// <summary>
@@ -48,15 +37,21 @@ public class Song
     /// <param name="dataDir">The directory of the chart files</param>
     /// <param name="songDir">The directory of the song files</param>
     public Song(string name, IDirectoryInfo dataDir, IDirectoryInfo songDir)
+        : this(new SongFiles(name, dataDir, songDir))
     {
-        Name = name;
-        Files = new SongFiles(name, dataDir, songDir);
     }
-    
+
     /// <summary>
-    /// Loads the difficulty charts.
+    /// Creates a new song representation from given song files
     /// </summary>
-    /// <returns>A dictionary of the difficulty charts, keys are the chart names</returns>
+    /// <param name="files">The files of this song</param>
+    public Song(ISongFiles files)
+    {
+        Name = files.Name;
+        Files = files;
+    }
+
+    /// <inheritdoc />
     public Dictionary<string, JsonChart> LoadDifficulties()
     {
         var result = new Dictionary<string, JsonChart>();
@@ -70,15 +65,7 @@ public class Song
         return result;
     }
 
-    /// <summary>
-    /// Saves a chart to a difficulty.
-    /// </summary>
-    /// <param name="difficultyName">The name of the difficulty to save to</param>
-    /// <param name="chart">The chart data to save</param>
-    /// <exception cref="ApplicationException">
-    /// The difficulty could not be found in the list of difficulties. Check <see cref="DifficultyNames"/>
-    /// if you are unsure a difficulty is valid.
-    /// </exception>
+    /// <inheritdoc />
     public void SaveDifficulty(string difficultyName, JsonChart chart)
     {
         var difficultyFile = Files.DifficultyFiles.First(file => file.Name == difficultyName);
@@ -87,14 +74,7 @@ public class Song
         difficultyFile.SerializeJson(chart);
     }
 
-    /// <summary>
-    /// Loads the events file for the song
-    /// </summary>
-    /// <returns>The chart data of the file</returns>
-    /// <exception cref="FileNotFoundException">
-    /// The events file does not exist. Check <see cref="HasEventsChart"/>
-    /// before calling this to avoid the exception.
-    /// </exception>
+    /// <inheritdoc />
     public JsonChart LoadEvents()
     {
         if (HasEventsChart) return Files.EventsFile.DeserializeJson<JsonChart>();
@@ -102,14 +82,7 @@ public class Song
         throw new FileNotFoundException("The events file does not exist");
     }
 
-    /// <summary>
-    /// Saves the chart to the events file.
-    /// </summary>
-    /// <param name="chart">The chart data to save</param>
-    /// <exception cref="FileNotFoundException">
-    /// The events file does not exist. Check <see cref="HasEventsChart"/>
-    /// before calling this to avoid the exception.
-    /// </exception>
+    /// <inheritdoc />
     public void SaveEvents(JsonChart chart)
     {
         if (HasEventsChart) Files.EventsFile.SerializeJson(chart);
@@ -117,28 +90,19 @@ public class Song
         throw new FileNotFoundException("The events file does not exist");
     }
 
-    /// <summary>
-    /// Loads the modification data 
-    /// </summary>
-    /// <returns>The modification data</returns>
+    /// <inheritdoc />
     public ModificationData LoadModificationData()
     {
         return Files.ModificationDataFile.DeserializeJson<ModificationData>();
     }
 
-    /// <summary>
-    /// Saves new data to the modification data
-    /// </summary>
-    /// <param name="data">The data to save</param>
+    /// <inheritdoc />
     public void SaveModificationData(ModificationData data)
     {
         Files.ModificationDataFile.SerializeJson(data);
     }
 
-    /// <summary>
-    /// Loads a backup of the data and song folders. Loads the
-    /// backups from a subfolder of themselves called backup.
-    /// </summary>
+    /// <inheritdoc />
     public void LoadBackup()
     {
         Files.BackupDataFolder.CopyTo(Files.DataFolder, false);

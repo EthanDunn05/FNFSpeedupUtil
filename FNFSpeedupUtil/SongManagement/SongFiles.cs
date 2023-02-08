@@ -1,69 +1,53 @@
-﻿using System.IO.Abstractions;
+using System.IO.Abstractions;
 using FNFSpeedupUtil.Extensions;
 using FNFSpeedupUtil.JsonData;
 
 namespace FNFSpeedupUtil.SongManagement;
 
 /// <summary>
-/// Controls the symbolic links and initialization of files
+/// Holds links to all the song files. Initializes data files when created.
 /// </summary>
-public class SongFiles
+public class SongFiles : ISongFiles
 {
-    /// <summary>
-    /// The song name (unformatted).
-    /// </summary>
+    /// <inheritdoc />
     public string Name { get; }
-
-    /// <summary>
-    /// The song's data folder. Holds the chart files and the events file.
-    /// </summary>
+    
+    /// <inheritdoc />
     public IDirectoryInfo DataFolder { get; }
-
-    /// <summary>
-    /// The song's song folder. Holds the music files.
-    /// </summary>
+    
+    /// <inheritdoc />
     public IDirectoryInfo MusicFolder { get; }
-
-    /// <summary>
-    /// The song instrumental file.
-    /// </summary>
+    
+    /// <inheritdoc />
     public IFileInfo InstFile { get; }
-
-    /// <summary>
-    /// The song voices file.
-    /// </summary>
+    
+    /// <inheritdoc />
     public IFileInfo VoicesFile { get; }
-
-    /// <summary>
-    /// A list of the difficulty chart files that the song has.
-    /// </summary>
+    
+    /// <inheritdoc />
     public List<IFileInfo> DifficultyFiles { get; }
-
-    /// <summary>
-    /// The events chart file.
-    /// </summary>
+    
+    /// <inheritdoc />
     public IFileInfo EventsFile { get; }
-
-    /// <summary>
-    /// The directory which holds all of the files created and managed by this
-    /// </summary>
+    
+    /// <inheritdoc />
     public IDirectoryInfo UtilityDataFolder { get; }
-
-    /// <summary>
-    /// The directory in which backup data is saved.
-    /// </summary>
+    
+    /// <inheritdoc />
     public IDirectoryInfo BackupDataFolder { get; }
     
-    /// <summary>
-    /// The directory in which backup songs are saved.
-    /// </summary>
+    /// <inheritdoc />
     public IDirectoryInfo BackupSongFolder { get; }
-
-    /// <summary>
-    /// The modification data file.
-    /// </summary>
+    
+    /// <inheritdoc />
     public IFileInfo ModificationDataFile { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="dataFolder"></param>
+    /// <param name="musicFolder"></param>
     public SongFiles(string name, IDirectoryInfo dataFolder, IDirectoryInfo musicFolder)
     {
         Name = name;
@@ -100,7 +84,7 @@ public class SongFiles
             ModificationDataFile.SerializeJson(new ModificationData());
         }
     }
-
+    
     /// <summary>
     /// Test if a path leads to a chart file
     /// </summary>

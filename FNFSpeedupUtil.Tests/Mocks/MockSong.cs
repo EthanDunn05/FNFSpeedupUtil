@@ -57,5 +57,5 @@ public class MockSong
         return (MockFileInfo)voicesFile;
     }
 
-    public SongFiles MakeSongFileManager() => new SongFiles(Name, DataDir, SongDir);
+    public ISongFiles MakeSongFileManager() => new SongFiles(Name, DataDir, SongDir);
 }

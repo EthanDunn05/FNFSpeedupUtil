@@ -7,9 +7,9 @@ namespace FNFSpeedupUtil.Menu.Pages.ModifySongs;
 
 public class ModifyScrollSpeedPage : Page
 {
-    private Song Song { get; }
+    private ISong Song { get; }
 
-    public ModifyScrollSpeedPage(Song song)
+    public ModifyScrollSpeedPage(ISong song)
     {
         Song = song;
     }

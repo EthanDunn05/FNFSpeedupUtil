@@ -7,9 +7,9 @@ namespace FNFSpeedupUtil.Menu.Pages.ModifySongs;
 
 public class ModifySpeedPage : Page
 {
-    private Song Song { get; }
+    private ISong Song { get; }
 
-    public ModifySpeedPage(Song song)
+    public ModifySpeedPage(ISong song)
     {
         Song = song;
     }

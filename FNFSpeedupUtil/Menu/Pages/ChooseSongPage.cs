@@ -33,7 +33,7 @@ public class ChooseSongPage : Page
         Navigate(new ModifySongPage(song));
     }
 
-    private static string MakeSongDisplayName(Song song)
+    private static string MakeSongDisplayName(ISong song)
     {
         var rawName = song.Name;
         var speedMod = song.LoadModificationData().SpeedModifier;
