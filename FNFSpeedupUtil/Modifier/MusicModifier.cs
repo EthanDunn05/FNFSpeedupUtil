@@ -1,27 +1,22 @@
-﻿using Xabe.FFmpeg;
+﻿using System.IO.Abstractions;
+using Xabe.FFmpeg;
 
 namespace FNFSpeedupUtil.Modifier;
 
-public class MusicModifier
+public static class MusicModifier
 {
-    private string SongPath { get; }
-
-    public MusicModifier(string songPath)
-    {
-        SongPath = songPath;
-    }
-
     /// <summary>
     /// 
     /// </summary>
     /// <param name="speedModification"></param>
-    public async Task Modify(double speedModification, bool changePitch)
+    public static async Task Modify(IFileInfo songFile, double speedModification, bool changePitch)
     {
-        Console.WriteLine($"Modifying music: {Path.GetFileName(SongPath)}");
+        Console.WriteLine($"Modifying music: {songFile.Name}");
 
         // Move file to temp location
+        var originalPath = songFile.FullName;
         var bufferPath = Path.Join(Path.GetTempPath(), @"/temp.ogg");
-        File.Move(SongPath, bufferPath, true);
+        songFile.MoveTo(bufferPath, true);
 
         // Get the audio streams and apply speed change
         var info = await FFmpeg.GetMediaInfo(bufferPath);
@@ -33,7 +28,7 @@ public class MusicModifier
         // Convert the temp file to the new modified version
         var conversion = FFmpeg.Conversions.New()
             .AddStream(audio)
-            .SetOutput(SongPath)
+            .SetOutput(originalPath)
             .SetOverwriteOutput(true)
             .UseMultiThread(false)
             .SetPreset(ConversionPreset.Fast);

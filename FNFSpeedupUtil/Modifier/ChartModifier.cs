@@ -7,44 +7,26 @@ namespace FNFSpeedupUtil.Modifier;
 /// <summary>
 /// Used for editing charts.
 /// </summary>
-public class ChartModifier
+public static class ChartModifier
 {
-    /// <summary>
-    /// Path to the chart file
-    /// </summary>
-    private string ChartPath { get; }
-
-    /// <summary>
-    /// The Json contents of the chart
-    /// </summary>
-    public JsonChart Chart { get; }
-
-    public ChartModifier(string chartPath)
-    {
-        ChartPath = chartPath;
-        Chart = JsonChart.Deserialize(ChartPath);
-    }
-
     /// <summary>
     /// Sets the scroll speed of a song.
     /// </summary>
+    /// <param name="chart">The chart to modify</param>
     /// <param name="scrollSpeed">The new scroll speed</param>
-    public void SetScrollSpeed(double scrollSpeed)
+    public static void SetScrollSpeed(JsonChart chart, double scrollSpeed)
     {
-        Console.WriteLine($"Modifying chart: {Path.GetFileName(ChartPath)}");
-        var song = Chart.Song;
+        var song = chart.Song;
         song.Speed = scrollSpeed;
-        Chart.Serialize(ChartPath);
     }
 
     /// <summary>
     /// Modifies the speed of the chart by the given multiplier
     /// </summary>
     /// <param name="multiplier">The value to multiply the speed by</param>
-    public void ModifySpeed(double multiplier)
+    public static void ModifySpeed(JsonChart chart, double multiplier)
     {
-        Console.WriteLine($"Modifying chart: {Path.GetFileName(ChartPath)}");
-        var song = Chart.Song;
+        var song = chart.Song;
 
         // Modify song bpm
         song.Bpm *= multiplier;
@@ -78,9 +60,6 @@ public class ChartModifier
         if (events != null)
             foreach (var eventData in events)
                 eventData.EventTime /= multiplier;
-
-        // Write the chart!
-        Chart.Serialize(ChartPath);
     }
 
     /// <summary>

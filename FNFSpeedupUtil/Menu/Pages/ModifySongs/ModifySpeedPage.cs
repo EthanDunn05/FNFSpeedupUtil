@@ -1,4 +1,5 @@
-﻿using FNFSpeedupUtil.Modifier;
+﻿using FNFSpeedupUtil.ChartData;
+using FNFSpeedupUtil.Modifier;
 
 namespace FNFSpeedupUtil.Menu.Pages.ModifySongs;
 
@@ -18,18 +19,28 @@ public class ModifySpeedPage : Page
         var speed = isPitched ? PromptPitchedSpeedModifier() : PromptUnpitchedSpeedModifier();
 
         // Modify the difficulties
-        foreach (var difficulty in Song.DifficultyPaths) new ChartModifier(difficulty).ModifySpeed(speed);
+        foreach (var difficulty in Song.DifficultyFiles)
+        {
+            var chart = JsonChart.Deserialize(difficulty);
+            ChartModifier.ModifySpeed(chart, speed);
+            chart.Serialize(difficulty);
+        }
 
         // Modify the events file if it exists
-        if (Song.EventsPath != null) new ChartModifier(Song.EventsPath).ModifySpeed(speed);
+        if (Song.EventsFile != null)
+        {
+            var chart = JsonChart.Deserialize(Song.EventsFile);
+            ChartModifier.ModifySpeed(chart, speed);
+            chart.Serialize(Song.EventsFile);
+        }
 
         // Modify the music
         Task.Run(async () =>
         {
-            await new MusicModifier(Song.InstPath).Modify(speed, isPitched);
+            await MusicModifier.Modify(Song.InstFile, speed, isPitched);
             
-            if (File.Exists(Song.VoicesPath))
-                await new MusicModifier(Song.VoicesPath).Modify(speed, isPitched);
+            if (Song.VoicesFile.Exists)
+                await MusicModifier.Modify(Song.VoicesFile, speed, isPitched);
         }).Wait();
         
         // Update the modification file

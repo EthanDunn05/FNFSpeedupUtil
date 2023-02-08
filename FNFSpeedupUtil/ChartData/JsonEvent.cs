@@ -9,7 +9,7 @@ namespace FNFSpeedupUtil.ChartData;
 /// is an IEnumerable to represent that.
 /// </summary>
 [JsonArray]
-public class JsonEvent : List<JValue>
+public class JsonEvent : List<JToken>
 {
     /// <summary>
     /// The time the event triggers
@@ -17,11 +17,6 @@ public class JsonEvent : List<JValue>
     public double EventTime
     {
         get => (double)this[0];
-        set => this[0] = (JValue)value;
-    }
-
-    public IEnumerator GetEnumerator()
-    {
-        return this.GetEnumerator();
+        set => this[0] = value;
     }
 }

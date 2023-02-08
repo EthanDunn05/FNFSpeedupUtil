@@ -1,4 +1,5 @@
-﻿using System.Reflection;
+﻿using System.IO.Abstractions;
+using System.Reflection;
 using FNFSpeedupUtil.Helpers;
 using FNFSpeedupUtil.Menu;
 using FNFSpeedupUtil.Menu.Pages;
@@ -18,11 +19,13 @@ Console.WriteLine();
 
 LoadFfmpeg();
 
+var fileSystem = new FileSystem();
+
 while (true)
 {
-
     var modPath = InputHandler.PromptDirectory("Enter the mod folder");
-    var menu = new MainMenuPage(modPath);
+    var modDir = fileSystem.DirectoryInfo.New(modPath);
+    var menu = new MainMenuPage(modDir);
     menu.Open();
 }
 

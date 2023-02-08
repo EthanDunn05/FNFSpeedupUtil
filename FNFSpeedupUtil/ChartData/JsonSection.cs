@@ -14,7 +14,7 @@ public class JsonSection
     /// A list of the notes in this section.
     /// </summary>
     [JsonProperty("sectionNotes")]
-    public List<JsonNote> SectionNotes { get; set; }
+    public List<JsonNote> SectionNotes { get; set; } = new();
     
     /// <summary>
     /// The section bpm.
@@ -26,5 +26,5 @@ public class JsonSection
     /// Hold the extra data since we can't be removing data
     /// </summary>
     [JsonExtensionData]
-    public Dictionary<string, JToken> AdditionalData { get; set; }
+    public Dictionary<string, JToken> AdditionalData { get; set; } = new();
 }
