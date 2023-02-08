@@ -2,6 +2,7 @@ using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using FNFSpeedupUtil.Extensions;
 using FNFSpeedupUtil.JsonData.ChartData;
+using FNFSpeedupUtil.SongManagement;
 
 namespace FNFSpeedupUtil.Tests.Mocks;
 
@@ -56,5 +57,5 @@ public class MockSong
         return (MockFileInfo)voicesFile;
     }
 
-    public Song MakeSong() => new Song(Name, DataDir, SongDir);
+    public SongFiles MakeSongFileManager() => new SongFiles(Name, DataDir, SongDir);
 }

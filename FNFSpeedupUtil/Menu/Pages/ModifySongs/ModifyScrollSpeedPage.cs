@@ -1,6 +1,7 @@
 ﻿using FNFSpeedupUtil.Extensions;
 using FNFSpeedupUtil.JsonData.ChartData;
 using FNFSpeedupUtil.Modifier;
+using FNFSpeedupUtil.SongManagement;
 
 namespace FNFSpeedupUtil.Menu.Pages.ModifySongs;
 
@@ -15,20 +16,19 @@ public class ModifyScrollSpeedPage : Page
 
     protected override void Render()
     {
-        foreach (var difficulty in Song.DifficultyFiles)
+        var difficulties = Song.LoadDifficulties();
+        foreach (var (name, chart) in difficulties)
         {
-            var chart = difficulty.DeserializeJson<JsonChart>();
-            Console.WriteLine($"Scroll speed: {difficulty.Name} - {chart.Song.Speed}");
+            Console.WriteLine($"Scroll speed: {name} - {chart.Song.Speed}");
         }
 
         var scrollSpeed = InputHandler.PromptDouble("What should the new scroll speed be?");
 
-        foreach (var difficulty in Song.DifficultyFiles)
+        foreach (var (name, chart) in difficulties)
         {
-            Console.WriteLine($"Modifying {difficulty.Name}");
-            var chart = difficulty.DeserializeJson<JsonChart>();
+            Console.WriteLine($"Modifying {name}");
             ChartModifier.SetScrollSpeed(chart, scrollSpeed);
-            difficulty.SerializeJson(chart);
+            Song.SaveDifficulty(name, chart);
         }
 
         Console.WriteLine("Done changing scroll speed!");

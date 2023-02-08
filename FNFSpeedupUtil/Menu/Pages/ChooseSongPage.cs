@@ -1,6 +1,7 @@
 ﻿using System.IO.Abstractions;
 using FNFSpeedupUtil.Helpers;
 using FNFSpeedupUtil.Menu.Pages.ModifySongs;
+using FNFSpeedupUtil.SongManagement;
 
 namespace FNFSpeedupUtil.Menu.Pages;
 
@@ -35,7 +36,7 @@ public class ChooseSongPage : Page
     private static string MakeSongDisplayName(Song song)
     {
         var rawName = song.Name;
-        var speedMod = song.ModificationData.SpeedModifier;
+        var speedMod = song.LoadModificationData().SpeedModifier;
 
         return $"{rawName} ({speedMod}x)";
     }

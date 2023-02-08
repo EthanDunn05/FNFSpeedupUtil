@@ -1,21 +1,18 @@
-using System.Collections;
 using System.IO.Abstractions;
-using System.IO.Abstractions.Extensions;
 using System.IO.Abstractions.TestingHelpers;
 using FNFSpeedupUtil.JsonData.ChartData;
-using FNFSpeedupUtil.Tests.AutoData;
 using FNFSpeedupUtil.Tests.Mocks;
 
-namespace FNFSpeedupUtil.Tests.Tests;
+namespace FNFSpeedupUtil.Tests.Tests.SongManagement;
 
-public class SongTest
+public class SongFilesTest
 {
     private MockSong MockSong { get; }
     private const string UtilDirName = "SpeedupUtilFiles";
     private const string BackupDataDirName = "backupData";
     private const string BackupSongDirName = "backupSong";
 
-    public SongTest()
+    public SongFilesTest()
     {
         // Create a mock file system with a mod and test song
         var mockFs = new MockFileSystem();
@@ -29,12 +26,12 @@ public class SongTest
     {
         // Arrange
         // Act
-        var testSong = MockSong.MakeSong();
+        var testSong = MockSong.MakeSongFileManager();
 
         // Assert
         Assert.Equal(MockSong.Name, testSong.Name);
-        Assert.Equal(MockSong.DataDir, testSong.DataDir);
-        Assert.Equal(MockSong.SongDir, testSong.SongDir);
+        Assert.Equal(MockSong.DataDir, testSong.DataFolder);
+        Assert.Equal(MockSong.SongDir, testSong.MusicFolder);
     }
 
     [Fact]
@@ -49,7 +46,7 @@ public class SongTest
         };
 
         // Act
-        var testSong = MockSong.MakeSong();
+        var testSong = MockSong.MakeSongFileManager();
         var testDiffs = testSong.DifficultyFiles.Select(f => f.FullName);
 
         // Assert
@@ -63,7 +60,7 @@ public class SongTest
         var expectedPath = MockSong.AddEvents(new JsonChart()).FullName;
 
         // Act
-        var testSong = MockSong.MakeSong();
+        var testSong = MockSong.MakeSongFileManager();
 
         // Assert
         Assert.NotNull(testSong.EventsFile);
@@ -78,7 +75,7 @@ public class SongTest
         var expectedVoicesPath = MockSong.AddVoices().FullName;
 
         // Act
-        var testSong = MockSong.MakeSong();
+        var testSong = MockSong.MakeSongFileManager();
 
         // Assert
         Assert.Equal(expectedInstPath, testSong.InstFile.FullName);
@@ -90,7 +87,7 @@ public class SongTest
     {
         // Arrange
         // Act
-        var testSong = MockSong.MakeSong();
+        var testSong = MockSong.MakeSongFileManager();
         var mockUtilityFile = MockSong.DataDir.SubDirectory(UtilDirName);
 
         // Assert
@@ -102,7 +99,7 @@ public class SongTest
     {
         // Arrange
         // Act
-        MockSong.MakeSong();
+        MockSong.MakeSongFileManager();
         var mockModificationData = MockSong.DataDir
             .SubDirectory(UtilDirName)
             .File("modification-data.json");
@@ -112,15 +109,14 @@ public class SongTest
     }
 
     [Fact]
-    public void MakeBackup_Data_Functional()
+    public void Constructor_Data_CreatedBackup()
     {
         // Arrange
         MockSong.AddDifficulty("test", new JsonChart());
         MockSong.AddEvents(new JsonChart());
 
         // Act
-        var testSong = MockSong.MakeSong();
-        testSong.MakeBackup();
+        var testSong = MockSong.MakeSongFileManager();
 
         var backupDir = MockSong.DataDir
             .SubDirectory(UtilDirName)
@@ -130,22 +126,20 @@ public class SongTest
         var backupEvents = backupDir.File("events.json");
 
         // Assert
-        Assert.True(testSong.HasBackup);
         Assert.True(backupDir.Exists);
         Assert.True(backupDifficulty.Exists);
         Assert.True(backupEvents.Exists);
     }
 
     [Fact]
-    public void MakeBackup_Song_Functional()
+    public void Constructor_Song_CreatedBackup()
     {
         // Arrange
         MockSong.AddInst();
         MockSong.AddVoices();
 
         // Act
-        var testSong = MockSong.MakeSong();
-        testSong.MakeBackup();
+        var testSong = MockSong.MakeSongFileManager();
 
         var backupDir = MockSong.DataDir
             .SubDirectory(UtilDirName)
@@ -155,57 +149,8 @@ public class SongTest
         var backupVoices = backupDir.File("Voices.ogg");
 
         // Assert
-        Assert.True(testSong.HasBackup);
         Assert.True(backupDir.Exists);
         Assert.True(backupInst.Exists);
         Assert.True(backupVoices.Exists);
-    }
-
-    [Fact]
-    public void LoadBackup_Data_LoadedCorrectly()
-    {
-        // Arrange
-        var backupDataDir = MockSong.DataDir
-            .CreateSubdirectory(UtilDirName)
-            .CreateSubdirectory(BackupDataDirName);
-        MockSong.DataDir
-            .CreateSubdirectory(UtilDirName)
-            .CreateSubdirectory(BackupSongDirName);
-
-        var expectedFile = backupDataDir.File("testFile");
-        expectedFile.Create();
-
-        // Act
-        var testSong = MockSong.MakeSong();
-        testSong.LoadBackup();
-        var loadedData = MockSong.DataDir.File("testFile");
-
-        // Assert
-        Assert.True(loadedData.Exists);
-        Assert.Equal(expectedFile.Name, loadedData.Name);
-    }
-
-    [Fact]
-    public void LoadBackup_Songs_Functional()
-    {
-        // Arrange
-        MockSong.DataDir
-            .CreateSubdirectory(UtilDirName)
-            .CreateSubdirectory(BackupDataDirName);
-        var backupSongDir = MockSong.DataDir
-            .CreateSubdirectory(UtilDirName)
-            .CreateSubdirectory(BackupSongDirName);
-
-        var expectedFile = backupSongDir.File("testFile");
-        expectedFile.Create();
-
-        // Act
-        var testSong = MockSong.MakeSong();
-        testSong.LoadBackup();
-        var loadedData = MockSong.SongDir.File("testFile");
-
-        // Assert
-        Assert.True(loadedData.Exists);
-        Assert.Equal(expectedFile.Name, loadedData.Name);
     }
 }
