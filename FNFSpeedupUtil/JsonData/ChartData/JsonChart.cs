@@ -1,8 +1,7 @@
-using System.IO.Abstractions;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FNFSpeedupUtil.ChartData;
+namespace FNFSpeedupUtil.JsonData.ChartData;
 
 /// <summary>
 /// The root object of a chart file.
@@ -22,18 +21,4 @@ public class JsonChart
     /// </summary>
     [JsonExtensionData]
     public Dictionary<string, JToken> AdditionalData { get; set; }
-
-    public static JsonChart Deserialize(IFileInfo chartFile)
-    {
-        var fs = chartFile.FileSystem;
-        var chartText = fs.File.ReadAllText(chartFile.FullName);
-        return JsonConvert.DeserializeObject<JsonChart>(chartText) ?? throw new InvalidOperationException();
-    }
-
-    public void Serialize(IFileInfo chartFile)
-    {
-        var fs = chartFile.FileSystem;
-        var chartText = JsonConvert.SerializeObject(this);
-        fs.File.WriteAllText(chartFile.FullName, chartText);
-    }
 }

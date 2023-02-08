@@ -1,11 +1,11 @@
 ﻿using System.IO.Abstractions;
 
-namespace FNFSpeedupUtil.Helpers;
+namespace FNFSpeedupUtil.Extensions;
 
-public static class DirectoryHelper
+public static class DirectoryExtensions
 {
     // Stolen from microsoft docs
-    public static void CopyDirectory(IDirectoryInfo sourceDir, IDirectoryInfo destinationDir, bool recursive)
+    public static void CopyTo(this IDirectoryInfo sourceDir, IDirectoryInfo destinationDir, bool recursive)
     {
         // Check if the source directory exists
         if (!sourceDir.Exists)
@@ -29,7 +29,7 @@ public static class DirectoryHelper
         foreach (var subDir in dirs)
         {
             var newDestinationDir = destinationDir.SubDirectory(subDir.Name);
-            CopyDirectory(subDir, newDestinationDir, true);
+            CopyTo(subDir, newDestinationDir, true);
         }
     }
 }

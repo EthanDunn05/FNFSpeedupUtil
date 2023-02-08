@@ -1,6 +1,7 @@
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
-using FNFSpeedupUtil.ChartData;
+using FNFSpeedupUtil.Extensions;
+using FNFSpeedupUtil.JsonData.ChartData;
 
 namespace FNFSpeedupUtil.Tests.Mocks;
 
@@ -29,7 +30,7 @@ public class MockSong
         
         var chartFile = DataDir.File(fileName);
         chartFile.Create();
-        chart.Serialize(chartFile);
+        chartFile.SerializeJson(chart);
         return (MockFileInfo)chartFile;
     }
 
@@ -37,7 +38,7 @@ public class MockSong
     {
         var chartFile = DataDir.File("events.json");
         chartFile.Create();
-        chart.Serialize(chartFile);
+        chartFile.SerializeJson(chart);
         return (MockFileInfo)chartFile;
     }
 

@@ -2,7 +2,7 @@ using System.Collections;
 using System.IO.Abstractions;
 using System.IO.Abstractions.Extensions;
 using System.IO.Abstractions.TestingHelpers;
-using FNFSpeedupUtil.ChartData;
+using FNFSpeedupUtil.JsonData.ChartData;
 using FNFSpeedupUtil.Tests.AutoData;
 using FNFSpeedupUtil.Tests.Mocks;
 

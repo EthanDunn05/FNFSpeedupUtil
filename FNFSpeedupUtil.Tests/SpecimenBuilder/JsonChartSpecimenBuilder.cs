@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using AutoFixture;
 using AutoFixture.Kernel;
-using FNFSpeedupUtil.ChartData;
+using FNFSpeedupUtil.JsonData.ChartData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 

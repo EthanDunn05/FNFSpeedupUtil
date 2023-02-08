@@ -1,8 +1,7 @@
-using System.Collections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FNFSpeedupUtil.ChartData;
+namespace FNFSpeedupUtil.JsonData.ChartData;
 
 /// <summary>
 /// Note data is stored as an array in the chart json, so this class

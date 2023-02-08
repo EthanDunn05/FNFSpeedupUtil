@@ -1,4 +1,5 @@
-﻿using FNFSpeedupUtil.ChartData;
+﻿using FNFSpeedupUtil.Extensions;
+using FNFSpeedupUtil.JsonData.ChartData;
 using FNFSpeedupUtil.Modifier;
 
 namespace FNFSpeedupUtil.Menu.Pages.ModifySongs;
@@ -21,17 +22,17 @@ public class ModifySpeedPage : Page
         // Modify the difficulties
         foreach (var difficulty in Song.DifficultyFiles)
         {
-            var chart = JsonChart.Deserialize(difficulty);
+            var chart = difficulty.DeserializeJson<JsonChart>();
             ChartModifier.ModifySpeed(chart, speed);
-            chart.Serialize(difficulty);
+            difficulty.SerializeJson(chart);
         }
 
         // Modify the events file if it exists
         if (Song.EventsFile != null)
         {
-            var chart = JsonChart.Deserialize(Song.EventsFile);
+            var chart = Song.EventsFile.DeserializeJson<JsonChart>();
             ChartModifier.ModifySpeed(chart, speed);
-            chart.Serialize(Song.EventsFile);
+            Song.EventsFile.SerializeJson(chart);
         }
 
         // Modify the music
@@ -45,7 +46,7 @@ public class ModifySpeedPage : Page
         
         // Update the modification file
         Song.ModificationData.SpeedModifier *= speed;
-        Song.UpdateModificationFile();
+        Song.ModificationDataFile.SerializeJson(Song.ModificationData);
 
         Console.WriteLine("Done Modifying Song!");
     }

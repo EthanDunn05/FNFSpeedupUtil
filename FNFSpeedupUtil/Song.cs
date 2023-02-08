@@ -1,6 +1,7 @@
 ﻿using System.IO.Abstractions;
-using FNFSpeedupUtil.ChartData;
+using FNFSpeedupUtil.Extensions;
 using FNFSpeedupUtil.Helpers;
+using FNFSpeedupUtil.JsonData;
 using Newtonsoft.Json;
 
 namespace FNFSpeedupUtil;
@@ -48,30 +49,30 @@ public class Song
     /// </summary>
     public IFileInfo? EventsFile { get; }
 
-    public ModificationData ModificationData { get; private set; }
+    public ModificationData ModificationData { get; }
 
-    private IDirectoryInfo UtilityDataDir { get; }
-    
-    private IDirectoryInfo BackupDataDir { get; }
-    private IDirectoryInfo BackupSongDir { get; }
-    
-    private IFileInfo ModificationDataFile { get; }
+    public IDirectoryInfo UtilityDataDir { get; }
+
+    public IDirectoryInfo BackupDataDir { get; }
+    public IDirectoryInfo BackupSongDir { get; }
+
+    public IFileInfo ModificationDataFile { get; }
 
     public Song(string name, IDirectoryInfo dataDir, IDirectoryInfo songDir)
     {
         Name = name;
         DataDir = dataDir;
         SongDir = songDir;
-        
+
         // Get all of the files and directories
         var dataFiles = dataDir.GetFiles();
         DifficultyFiles = dataFiles.Where(IsChartFile).ToList();
-        
+
         EventsFile = dataFiles.FirstOrDefault(path => path.Name == "events.json");
 
         InstFile = SongDir.File("Inst.ogg");
         VoicesFile = SongDir.File("Voices.ogg");
-        
+
         UtilityDataDir = DataDir.SubDirectory("SpeedupUtilFiles");
         BackupDataDir = UtilityDataDir.SubDirectory("backupData");
         BackupSongDir = UtilityDataDir.SubDirectory("backupSong");
@@ -81,10 +82,7 @@ public class Song
         // Create the utility folder if it doesn't exist
         if (!UtilityDataDir.Exists) UtilityDataDir.Create();
 
-        // Read the modification data if it exists, or make a new one
-        if (ModificationDataFile.Exists)
-            ModificationData = ModificationData.Deserialize(ModificationDataFile);
-        else ResetModificationFile();
+        ModificationData = ReadOrCreateModificationData();
     }
 
     /// <summary>
@@ -99,21 +97,15 @@ public class Song
         return followsNamingScheme && isJsonFile;
     }
 
-    /// <summary>
-    /// Resets the modification file. Effectively writes all properties to default.
-    /// </summary>
-    private void ResetModificationFile()
+    private ModificationData ReadOrCreateModificationData()
     {
-        ModificationData = new ModificationData();
-        ModificationData.Serialize(ModificationDataFile);
-    }
+        if (ModificationDataFile.Exists)
+            return ModificationDataFile.DeserializeJson<ModificationData>();
 
-    /// <summary>
-    /// Re-serializes the modification file.
-    /// </summary>
-    public void UpdateModificationFile()
-    {
-        ModificationData.Serialize(ModificationDataFile);
+        ModificationDataFile.Create();
+        var newData = new ModificationData();
+        ModificationDataFile.SerializeJson(newData);
+        return newData;
     }
 
     /// <summary>
@@ -122,8 +114,8 @@ public class Song
     /// </summary>
     public void MakeBackup()
     {
-        DirectoryHelper.CopyDirectory(DataDir, BackupDataDir, false);
-        DirectoryHelper.CopyDirectory(SongDir, BackupSongDir, false);
+        DataDir.CopyTo(BackupDataDir, false);
+        SongDir.CopyTo(BackupSongDir, false);
     }
 
     /// <summary>
@@ -132,10 +124,11 @@ public class Song
     /// </summary>
     public void LoadBackup()
     {
-        DirectoryHelper.CopyDirectory(BackupDataDir, DataDir, false);
-        DirectoryHelper.CopyDirectory(BackupSongDir, SongDir, false);
+        BackupDataDir.CopyTo(DataDir, false);
+        BackupSongDir.CopyTo(SongDir, false);
 
         // Reset the modification file because the data should be reset
-        ResetModificationFile();
+        var newData = new ModificationData();
+        ModificationDataFile.SerializeJson(newData);
     }
 }

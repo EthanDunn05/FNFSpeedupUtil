@@ -1,8 +1,7 @@
-using System.Collections;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FNFSpeedupUtil.ChartData;
+namespace FNFSpeedupUtil.JsonData.ChartData;
 
 /// <summary>
 /// Event data is stored as an array in the chart json, so this class
