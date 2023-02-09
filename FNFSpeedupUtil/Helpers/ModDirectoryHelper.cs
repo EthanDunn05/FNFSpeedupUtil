@@ -21,11 +21,14 @@ public static class ModDirectoryHelper
         {
             var dataDir = modDir.SubDirectory("assets").SubDirectory("data");
             var songDataDirs = dataDir.GetDirectories();
-            
-            return new List<ISong>((from songDataDir in songDataDirs
-                let songName = songDataDir.Name
-                let songPath = modDir.SubDirectory("assets").SubDirectory("songs").SubDirectory(songName)
-                select new Song(songName, songDataDir, songPath)).ToList());
+
+            if (songDataDirs.Length <= 0) throw new DirectoryNotFoundException();
+
+            return (from dir in songDataDirs
+                let songName = dir.Name
+                let songDir = modDir.SubDirectory("assets").SubDirectory("songs").SubDirectory(songName)
+                where songDir.Exists
+                select new Song(songName, dir, songDir)).Cast<ISong>().ToList();
         }
         catch (DirectoryNotFoundException e)
         {
@@ -38,10 +41,13 @@ public static class ModDirectoryHelper
             var dataDir = modDir.SubDirectory("mods").SubDirectory("data");
             var songDataDirs = dataDir.GetDirectories();
 
-            return new List<ISong>((from songDataDir in songDataDirs
-                let songName = songDataDir.Name
-                let songPath = modDir.SubDirectory("mods").SubDirectory("songs").SubDirectory(songName)
-                select new Song(songName, songDataDir, songPath)).ToList());
+            if (songDataDirs.Length <= 0) throw new DirectoryNotFoundException();
+
+            return (from dir in songDataDirs
+                let songName = dir.Name
+                let songDir = modDir.SubDirectory("assets").SubDirectory("songs").SubDirectory(songName)
+                where songDir.Exists
+                select new Song(songName, dir, songDir)).Cast<ISong>().ToList();
         }
         catch (DirectoryNotFoundException e)
         {

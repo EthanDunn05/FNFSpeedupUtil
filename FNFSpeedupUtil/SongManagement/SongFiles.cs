@@ -78,9 +78,14 @@ public class SongFiles : ISongFiles
 
         // Initialize modification data
         ModificationDataFile = UtilityDataFolder.File("modification-data.json");
-        if (!ModificationDataFile.Exists)
+        if (!ModificationDataFile.Exists) ModificationDataFile.SerializeJson(new ModificationData());
+        try
         {
-            ModificationDataFile.Create();
+            ModificationDataFile.DeserializeJson<ModificationData>();
+        }
+        catch
+        {
+            // Default if deserialize fails
             ModificationDataFile.SerializeJson(new ModificationData());
         }
     }

@@ -38,8 +38,6 @@ public static class FileExtensions
     /// </param>
     public static void SerializeJson(this IFileInfo outputFile, object toSerialize)
     {
-        outputFile.Create();
-        
         var serialized = JsonConvert.SerializeObject(toSerialize);
 
         var fileSystem = outputFile.FileSystem;
