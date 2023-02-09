@@ -85,9 +85,8 @@ public class Song : ISong
     /// <inheritdoc />
     public void SaveEvents(JsonChart chart)
     {
-        if (HasEventsChart) Files.EventsFile.SerializeJson(chart);
-
-        throw new FileNotFoundException("The events file does not exist");
+        if (!HasEventsChart) throw new FileNotFoundException("The events file does not exist");
+        Files.EventsFile.SerializeJson(chart);
     }
 
     /// <inheritdoc />
