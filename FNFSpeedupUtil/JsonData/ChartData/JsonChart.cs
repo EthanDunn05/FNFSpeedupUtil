@@ -13,12 +13,12 @@ public class JsonChart
     /// The song object... It holds all the data...
     /// </summary>
     [JsonProperty("song")]
-    public JsonSong Song { get; set; }
-    
+    public JsonSong Song { get; set; } = new();
+
     /// <summary>
     /// Additional data not represented by properties. Should always
     /// be empty, but this is here so that data will never be lost.
     /// </summary>
     [JsonExtensionData]
-    public Dictionary<string, JToken> AdditionalData { get; set; }
+    public Dictionary<string, JToken> AdditionalData { get; set; } = new();
 }
