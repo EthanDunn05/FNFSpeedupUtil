@@ -1,5 +1,6 @@
 ﻿using System.IO.Abstractions;
 using Xabe.FFmpeg;
+using Xabe.FFmpeg.Events;
 
 namespace FNFSpeedupUtil.Modifier;
 
@@ -9,13 +10,11 @@ public static class MusicModifier
     /// 
     /// </summary>
     /// <param name="speedModification"></param>
-    public static async Task Modify(IFileInfo songFile, double speedModification, bool changePitch)
+    public static async Task Modify(IFileInfo songFile, double speedModification, bool changePitch, ConversionProgressEventHandler onProgress)
     {
-        Console.WriteLine($"Modifying music: {songFile.Name}");
-
         // Move file to temp location
         var originalPath = songFile.FullName;
-        var bufferPath = Path.Join(Path.GetTempPath(), @"/temp.ogg");
+        var bufferPath = Path.Join(Path.GetTempPath(), $@"/temp-{songFile.Name}.ogg");
         songFile.MoveTo(bufferPath, true);
 
         // Get the audio streams and apply speed change
@@ -40,13 +39,8 @@ public static class MusicModifier
                 $"-af \"asetrate={audio.SampleRate * speedModification},aresample={audio.SampleRate}\"");
         }
 
-        // Keep progress :)
-        conversion.OnProgress += (sender, args) =>
-        {
-            Console.WriteLine(
-                $"{args.Duration}/{args.TotalLength / speedModification}");
-        };
-
+        conversion.OnProgress += onProgress;
+        
         // Do the conversion
         var result = await conversion.Start();
 

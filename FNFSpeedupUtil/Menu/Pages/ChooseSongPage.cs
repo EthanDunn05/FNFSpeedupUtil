@@ -1,11 +1,14 @@
 ﻿using System.IO.Abstractions;
+using FNFSpeedupUtil.Console;
 using FNFSpeedupUtil.Helpers;
-using FNFSpeedupUtil.Menu.Pages.ModifySongs;
+using FNFSpeedupUtil.JsonData;
+using FNFSpeedupUtil.Menu.Pages.SongModification;
 using FNFSpeedupUtil.SongManagement;
+using Spectre.Console;
 
 namespace FNFSpeedupUtil.Menu.Pages;
 
-public class ChooseSongPage : Page
+public class ChooseSongPage : IPage
 {
     private IDirectoryInfo ModDir { get; }
 
@@ -14,30 +17,23 @@ public class ChooseSongPage : Page
         ModDir = modDir;
     }
 
-    protected override void Render()
+    public void Render(Menu menu)
     {
-        var songs = ModDirectoryHelper.FindSongs(ModDir);
+        // Load songs
+        List<ISong> songs = null!;
+        var speedMod = new Dictionary<ISong, ModificationData>();
+        menu.Console.Notification("Loading Songs").Open(() =>
+        {
+            songs = ModDirectoryHelper.FindSongs(ModDir);
+            songs.ForEach(s => speedMod.Add(s, s.LoadModificationData()));
+        });
 
-        // Select the song to modify
-        var songNames = songs.Select(MakeSongDisplayName).ToList();
-        songNames.Add("Back");
-        
-        var songSelection = InputHandler.PromptList("What song to modify?", songNames);
-        
-        // Back was selected
-        if (songSelection == songNames.Count - 1)
-            return;
-        
-        var song = songs[songSelection];
-        
-        Navigate(new ModifySongPage(song));
-    }
+        // Select song
+        var song = menu.Console.Prompt(new MappedSelectionPrompt<ISong>(
+            "Choose a song to modify",
+            songs.ToDictionary(s => $"{s.Name} [grey]({speedMod[s].SpeedModifier}x)[/]"))
+        );
 
-    private static string MakeSongDisplayName(ISong song)
-    {
-        var rawName = song.Name;
-        var speedMod = song.LoadModificationData().SpeedModifier;
-
-        return $"{rawName} ({speedMod}x)";
+        menu.ChangePage(new ModifySongPage(ModDir, song));
     }
 }

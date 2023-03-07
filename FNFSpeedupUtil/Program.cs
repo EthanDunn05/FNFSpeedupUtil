@@ -1,33 +1,14 @@
 ﻿using System.IO.Abstractions;
-using System.Reflection;
-using FNFSpeedupUtil.Helpers;
 using FNFSpeedupUtil.Menu;
 using FNFSpeedupUtil.Menu.Pages;
-using FNFSpeedupUtil.Modifier;
+using Spectre.Console;
 using Xabe.FFmpeg;
-using Xabe.FFmpeg.Downloader;
-
-Console.WriteLine();
-Console.WriteLine(new string('=', Console.WindowWidth));
-Console.WriteLine();
-
-Console.WriteLine("AcidAssassin's FNF Speedup Util v0.0.1");
-
-Console.WriteLine();
-Console.WriteLine(new string('=', Console.WindowWidth));
-Console.WriteLine();
 
 LoadFfmpeg();
 
 var fileSystem = new FileSystem();
 
-while (true)
-{
-    var modPath = InputHandler.PromptDirectory("Enter the mod folder");
-    var modDir = fileSystem.DirectoryInfo.New(modPath);
-    var menu = new MainMenuPage(modDir);
-    menu.Open();
-}
+var menu = new Menu(new MainPage(fileSystem), AnsiConsole.Console);
 
 async void LoadFfmpeg()
 {

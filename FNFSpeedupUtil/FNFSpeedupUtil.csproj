@@ -9,6 +9,7 @@
 
     <ItemGroup>
       <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
+      <PackageReference Include="Spectre.Console" Version="0.46.1-preview.0.7" />
       <PackageReference Include="TestableIO.System.IO.Abstractions" Version="19.1.14" />
       <PackageReference Include="TestableIO.System.IO.Abstractions.Extensions" Version="1.0.39" />
       <PackageReference Include="TestableIO.System.IO.Abstractions.Wrappers" Version="19.1.14" />
