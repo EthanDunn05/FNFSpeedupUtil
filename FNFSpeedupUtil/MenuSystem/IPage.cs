@@ -1,6 +1,4 @@
-﻿using Spectre.Console;
-
-namespace FNFSpeedupUtil.Menu;
+﻿namespace FNFSpeedupUtil.MenuSystem;
 
 public interface IPage
 {

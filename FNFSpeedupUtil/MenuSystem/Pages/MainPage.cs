@@ -1,7 +1,7 @@
 ﻿using System.IO.Abstractions;
 using Spectre.Console;
 
-namespace FNFSpeedupUtil.Menu.Pages;
+namespace FNFSpeedupUtil.MenuSystem.Pages;
 
 public class MainPage : IPage
 {

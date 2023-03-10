@@ -1,20 +1,17 @@
-﻿using System.IO.Abstractions;
-using FNFSpeedupUtil.Console;
+﻿using FNFSpeedupUtil.Console;
 using FNFSpeedupUtil.Modifier;
 using FNFSpeedupUtil.SongManagement;
 using Spectre.Console;
 
-namespace FNFSpeedupUtil.Menu.Pages.SongModification;
+namespace FNFSpeedupUtil.MenuSystem.Pages.SongModification;
 
 public class SpeedupSongPage : IPage
 {
     private ISong Song { get; }
-    private IDirectoryInfo ModDir { get; }
 
-    public SpeedupSongPage(ISong song, IDirectoryInfo modDir)
+    public SpeedupSongPage(ISong song)
     {
         Song = song;
-        ModDir = modDir;
     }
 
     // This method is a mess. I'll fix it later
@@ -115,7 +112,6 @@ public class SpeedupSongPage : IPage
         });
 
         menu.Console.Notification("Done Modifying Song!").Open(() => System.Console.ReadKey());
-
-        menu.ChangePage(new ChooseSongPage(ModDir));
+        menu.PreviousPage();
     }
 }

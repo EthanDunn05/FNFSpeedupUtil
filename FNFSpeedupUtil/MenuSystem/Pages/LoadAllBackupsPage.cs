@@ -5,7 +5,7 @@ using FNFSpeedupUtil.Helpers;
 using FNFSpeedupUtil.SongManagement;
 using Spectre.Console;
 
-namespace FNFSpeedupUtil.Menu.Pages;
+namespace FNFSpeedupUtil.MenuSystem.Pages;
 
 public class LoadAllBackupsPage : IPage
 {
@@ -36,6 +36,6 @@ public class LoadAllBackupsPage : IPage
 
         menu.Console.Notification("Done Loading").Open(() => System.Console.ReadKey());
         
-        menu.ChangePage(new ModManagePage(ModDir));
+        menu.PreviousPage();
     }
 }

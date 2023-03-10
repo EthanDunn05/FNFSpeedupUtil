@@ -3,7 +3,7 @@ using FNFSpeedupUtil.Console;
 using FNFSpeedupUtil.SongManagement;
 using Spectre.Console;
 
-namespace FNFSpeedupUtil.Menu.Pages.SongModification;
+namespace FNFSpeedupUtil.MenuSystem.Pages.SongModification;
 
 public class ModifySongPage : IPage
 {
@@ -18,12 +18,12 @@ public class ModifySongPage : IPage
 
     public void Render(Menu menu)
     {
-        var navTo = menu.Console.Prompt(
-            new MappedSelectionPrompt<IPage>("Select what to do with this song", new Dictionary<string, IPage>
+        var navAction = menu.Console.Prompt(
+            new MappedSelectionPrompt<Action>("Select what to do with this song", new Dictionary<string, Action>
             {
-                {"Modify speed", new SpeedupSongPage(Song, ModDir)},
-                {"Stop modifying this song", new ModManagePage(ModDir)}
+                {"Modify speed", () => menu.ChangePage(new SpeedupSongPage(Song))},
+                {"Stop modifying this song", menu.PreviousPage}
             }));
-        menu.ChangePage(navTo);
+        navAction();
     }
 }

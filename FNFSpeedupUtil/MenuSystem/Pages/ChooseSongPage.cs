@@ -2,23 +2,35 @@
 using FNFSpeedupUtil.Console;
 using FNFSpeedupUtil.Helpers;
 using FNFSpeedupUtil.JsonData;
-using FNFSpeedupUtil.Menu.Pages.SongModification;
+using FNFSpeedupUtil.MenuSystem.Pages.SongModification;
 using FNFSpeedupUtil.SongManagement;
 using Spectre.Console;
 
-namespace FNFSpeedupUtil.Menu.Pages;
+namespace FNFSpeedupUtil.MenuSystem.Pages;
 
 public class ChooseSongPage : IPage
 {
     private IDirectoryInfo ModDir { get; }
+    private bool OfferBack { get; }
 
-    public ChooseSongPage(IDirectoryInfo modDir)
+    public ChooseSongPage(IDirectoryInfo modDir, bool offerBack)
     {
         ModDir = modDir;
+        OfferBack = offerBack;
     }
 
     public void Render(Menu menu)
     {
+        if (OfferBack)
+        {
+            var pickAnother = menu.Console.Prompt(new ConfirmationPrompt("Do you want to pick another song?"));
+            if (!pickAnother)
+            {
+                menu.PreviousPage();
+                return;
+            }
+        }
+        
         // Load songs
         List<ISong> songs = null!;
         var speedMod = new Dictionary<ISong, ModificationData>();
