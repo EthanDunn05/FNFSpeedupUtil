@@ -25,9 +25,7 @@ public class LoadAllBackupsPage : IPage
         menu.Console.Progress().Start(ctx =>
         {
             var task = ctx.AddTask("Loading", true, songs.Count);
-            
-            foreach (var song in songs)
-            {
+            foreach (var song in songs) {
                 ctx.Refresh();
                 ManageExceptions.DropException(() => song.LoadBackup());
                 task.Increment(1);

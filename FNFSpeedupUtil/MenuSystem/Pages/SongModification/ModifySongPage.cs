@@ -22,6 +22,7 @@ public class ModifySongPage : IPage
             new MappedSelectionPrompt<Action>("Select what to do with this song", new Dictionary<string, Action>
             {
                 {"Modify speed", () => menu.ChangePage(new SpeedupSongPage(Song))},
+                {"Load Backup", () => menu.ChangePage(new LoadSongBackupPage(Song))},
                 {"Stop modifying this song", menu.PreviousPage}
             }));
         navAction();

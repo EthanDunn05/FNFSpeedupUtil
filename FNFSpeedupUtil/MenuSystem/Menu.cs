@@ -5,39 +5,53 @@ namespace FNFSpeedupUtil.MenuSystem;
 
 public class Menu
 {
-    public IPage? Page { get; set; }
+    /// <summary>
+    /// The Console that this menu will print to.
+    /// </summary>
     public IAnsiConsole Console { get; }
-    
+
     /// <summary>
     /// Holds a stack with the visited pages, and the current page is not included.
     /// The bottom element of the stack will be null.
     /// </summary>
     public ImmutableStack<IPage?> PageHistory { get; private set; } = ImmutableStack<IPage?>.Empty;
+    
+    private IPage? Page { get; set; }
 
     public Menu(IAnsiConsole console)
     {
         Console = console;
     }
 
+    /// <summary>
+    /// Goes to and renders the previous page that was visited.
+    /// </summary>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when trying to go to a previous page when there isn't one. 
+    /// </exception>
     public void PreviousPage()
     {
-        Page = PageHistory.Peek();
+        Page = PageHistory.Peek() ?? throw new InvalidOperationException();
         PageHistory = PageHistory.Pop();
-        RenderPage();
-    }
-    
-    public void ChangePage(IPage? page)
-    {
-        PageHistory =PageHistory.Push(Page);
-        Page = page;
-        RenderPage();
+        RenderPage(Page);
     }
 
-    private void RenderPage()
+    /// <summary>
+    /// Changes the current page, adding the current page to the history, and rendering the new one.
+    /// </summary>
+    /// <param name="page">The new page to navigate to</param>
+    public void ChangePage(IPage page)
+    {
+        PageHistory = PageHistory.Push(Page);
+        Page = page;
+        RenderPage(Page);
+    }
+
+    private void RenderPage(IPage page)
     {
         Console.Clear();
         RenderHeader();
-        Page.Render(this);
+        page.Render(this);
     }
 
     private void RenderHeader()

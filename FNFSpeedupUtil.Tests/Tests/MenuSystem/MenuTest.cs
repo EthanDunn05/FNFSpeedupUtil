@@ -1,4 +1,4 @@
-using FNFSpeedupUtil.MenuSystem;
+ using FNFSpeedupUtil.MenuSystem;
 using FNFSpeedupUtil.Tests.Mocks;
 using Spectre.Console;
 using Spectre.Console.Testing;
@@ -63,5 +63,31 @@ public class MenuTest
         
         // Assert
         Assert.Equal("Test", testConsole.Lines[^1]);
+    }
+    
+    [Fact]
+    public void PreviousPage_NoHistory_ThrowsError()
+    {
+        // Arrange
+        var testConsole = new TestConsole();
+        var testMenu = new Menu(testConsole);
+        
+        // Act / Assert
+        Assert.Throws<InvalidOperationException>(testMenu.PreviousPage);
+    }
+    
+    [Fact]
+    public void PreviousPage_FirstPage_ThrowsError()
+    {
+        // Arrange
+        var testConsole = new TestConsole();
+        var testMenu = new Menu(testConsole);
+        var blankPage = new MockPage(_ => { });
+        
+        // Act
+        testMenu.ChangePage(blankPage);
+        
+        // Assert
+        Assert.Throws<InvalidOperationException>(testMenu.PreviousPage);
     }
 }
