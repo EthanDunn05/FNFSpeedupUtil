@@ -15,7 +15,7 @@ public class Menu
     /// The bottom element of the stack will be null.
     /// </summary>
     public ImmutableStack<IPage?> PageHistory { get; private set; } = ImmutableStack<IPage?>.Empty;
-    
+
     private IPage? Page { get; set; }
 
     public Menu(IAnsiConsole console)
@@ -27,7 +27,7 @@ public class Menu
     /// Goes to and renders the previous page that was visited.
     /// </summary>
     /// <exception cref="InvalidOperationException">
-    /// Thrown when trying to go to a previous page when there isn't one. 
+    /// Thrown when trying to go to a previous page when there isn't one.
     /// </exception>
     public void PreviousPage()
     {
@@ -57,13 +57,12 @@ public class Menu
     private void RenderHeader()
     {
         Console.Write(new Rule());
-        Console.Write(new FigletText(FigletFont.Default, "FNF Speedup Util")
-            .Justify(Justify.Center)
-            .Color(Color.Purple)
+        Console.Write(
+            new FigletText(FigletFont.Default, "FNF Speedup Util")
+                .Justify(Justify.Center)
+                .Color(Color.Purple)
         );
-        Console.Write(new Rule("[blue]Made by AcidAssassin[/]")
-            .Justify(Justify.Center)
-        );
+        Console.Write(new Rule("[blue]Made by AcidAssassin[/]").Justify(Justify.Center));
         Console.WriteLine();
     }
 }
