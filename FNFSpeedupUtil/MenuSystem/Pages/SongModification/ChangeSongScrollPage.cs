@@ -23,8 +23,8 @@ public class ChangeSongScrollPage : IPage
         var selectedDiff = menu.Console.Prompt(
             new MappedSelectionPrompt<KeyValuePair<string, JsonChart>>(
                 "Which difficulty to modify?",
-                (Dictionary<string, KeyValuePair<string, JsonChart>>)
-                    diffs.Select(s => KeyValuePair.Create(s.Key + $"({s.Value.Song.Speed})", s))
+                diffs.Select(s => KeyValuePair.Create(s.Key + $"({s.Value.Song.Speed})", s))
+                    .ToDictionary(k => k.Key, k => k.Value)
             )
         );
 
