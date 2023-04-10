@@ -3,6 +3,7 @@ using FNFSpeedupUtil.Console;
 using FNFSpeedupUtil.Helpers;
 using FNFSpeedupUtil.JsonData;
 using FNFSpeedupUtil.MenuSystem.Pages.SongModification;
+using FNFSpeedupUtil.ModEngines;
 using FNFSpeedupUtil.SongManagement;
 using Spectre.Console;
 
@@ -11,12 +12,14 @@ namespace FNFSpeedupUtil.MenuSystem.Pages;
 public class ChooseSongPage : IPage
 {
     private IDirectoryInfo ModDir { get; }
+    private IEngine ModEngine { get; }
     private bool OfferBack { get; }
 
-    public ChooseSongPage(IDirectoryInfo modDir, bool offerBack)
+    public ChooseSongPage(IDirectoryInfo modDir, bool offerBack, IEngine modEngine)
     {
         ModDir = modDir;
         OfferBack = offerBack;
+        ModEngine = modEngine;
     }
 
     public void Render(Menu menu)
@@ -36,7 +39,7 @@ public class ChooseSongPage : IPage
         var speedMod = new Dictionary<ISong, ModificationData>();
         menu.Console.Notification("Loading Songs").Open(() =>
         {
-            songs = ModDirectoryHelper.FindSongs(ModDir);
+            songs = ModEngine.FindSongs(ModDir);
             songs.ForEach(s => speedMod.Add(s, s.LoadModificationData()));
         });
 

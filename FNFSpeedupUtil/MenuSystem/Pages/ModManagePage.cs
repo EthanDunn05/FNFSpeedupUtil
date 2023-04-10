@@ -1,5 +1,7 @@
 ﻿using System.IO.Abstractions;
 using FNFSpeedupUtil.Console;
+using FNFSpeedupUtil.ModEngines;
+using FNFSpeedupUtil.SongManagement;
 using Spectre.Console;
 
 namespace FNFSpeedupUtil.MenuSystem.Pages;
@@ -7,10 +9,12 @@ namespace FNFSpeedupUtil.MenuSystem.Pages;
 public class ModManagePage : IPage
 {
     private IDirectoryInfo ModDir { get; }
+    private IEngine ModEngine { get; }
 
-    public ModManagePage(IDirectoryInfo modDir)
+    public ModManagePage(IDirectoryInfo modDir, IEngine modEngine)
     {
         ModDir = modDir;
+        ModEngine = modEngine;
     }
 
     public void Render(Menu menu)
@@ -19,7 +23,7 @@ public class ModManagePage : IPage
             "What do do with this mod?",
             new Dictionary<string, Action>
             {
-                {"Manage a song", () => menu.ChangePage(new ChooseSongPage(ModDir, false))},
+                {"Manage a song", () => menu.ChangePage(new ChooseSongPage(ModDir, false, ModEngine))},
                 {"Restore all songs", () => menu.ChangePage(new LoadAllBackupsPage(ModDir))},
                 {"Use a different mod", menu.PreviousPage},
             })

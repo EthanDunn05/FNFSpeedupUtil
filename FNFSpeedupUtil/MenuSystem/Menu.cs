@@ -47,6 +47,14 @@ public class Menu
         RenderPage(Page);
     }
 
+    /// <summary>
+    /// Re renders the current page
+    /// </summary>
+    public void RefreshPage()
+    {
+        RenderPage(Page!);
+    }
+
     private void RenderPage(IPage page)
     {
         Console.Clear();
