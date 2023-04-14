@@ -24,12 +24,9 @@ public class ModifySongPage : IPage
                 new Dictionary<string, Action>
                 {
                     { "Modify speed", () => menu.ChangePage(new SpeedupSongPage(Song)) },
-                    {
-                        "Change Scroll Speed",
-                        () => menu.ChangePage(new ChangeSongScrollPage(Song))
-                    },
+                    { "Change Scroll Speed", () => menu.ChangePage(new ChangeSongScrollPage(Song)) },
                     { "Load Backup", () => menu.ChangePage(new LoadSongBackupPage(Song)) },
-                    { "Stop modifying this song", menu.PreviousPage }
+                    { "Stop modifying this song", () => menu.PreviousPage(2) },
                 }
             )
         );

@@ -29,11 +29,24 @@ public class Menu
     /// <exception cref="InvalidOperationException">
     /// Thrown when trying to go to a previous page when there isn't one.
     /// </exception>
-    public void PreviousPage()
+    public void PreviousPage() => PreviousPage(1);
+
+    /// <summary>
+    /// Goes to and renders the previous page that was visited.
+    /// </summary>
+    /// <param name="pages">The number of pages to go back.</param>
+    /// <exception cref="InvalidOperationException">
+    /// Thrown when trying to go to a previous page when there isn't one.
+    /// </exception>
+    public void PreviousPage(int pages)
     {
-        Page = PageHistory.Peek() ?? throw new InvalidOperationException();
-        PageHistory = PageHistory.Pop();
-        RenderPage(Page);
+        for (var i = 0; i < pages; i++)
+        {
+            Page = PageHistory.Peek() ?? throw new InvalidOperationException();
+            PageHistory = PageHistory.Pop();
+        }
+
+        RenderPage(Page!);
     }
 
     /// <summary>

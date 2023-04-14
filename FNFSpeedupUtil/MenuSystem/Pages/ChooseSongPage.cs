@@ -13,27 +13,15 @@ public class ChooseSongPage : IPage
 {
     private IDirectoryInfo ModDir { get; }
     private IEngine ModEngine { get; }
-    private bool OfferBack { get; }
 
-    public ChooseSongPage(IDirectoryInfo modDir, bool offerBack, IEngine modEngine)
+    public ChooseSongPage(IDirectoryInfo modDir, IEngine modEngine)
     {
         ModDir = modDir;
-        OfferBack = offerBack;
         ModEngine = modEngine;
     }
 
     public void Render(Menu menu)
     {
-        if (OfferBack)
-        {
-            var pickAnother = menu.Console.Prompt(new ConfirmationPrompt("Do you want to pick another song?"));
-            if (!pickAnother)
-            {
-                menu.PreviousPage();
-                return;
-            }
-        }
-        
         // Load songs
         List<ISong> songs = null!;
         var speedMod = new Dictionary<ISong, ModificationData>();

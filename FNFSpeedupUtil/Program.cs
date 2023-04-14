@@ -16,7 +16,9 @@ async void LoadFfmpeg()
     // Find ffmpeg
     var path = Environment.GetEnvironmentVariable("PATH");
     var paths = path.Split(Path.PathSeparator);
-    var ffmpegPath = paths.FirstOrDefault(s => s.Contains("ffmpeg", StringComparison.OrdinalIgnoreCase));
-    
+    var ffmpegPath = paths.FirstOrDefault(
+        s => s.Contains("ffmpeg", StringComparison.OrdinalIgnoreCase)
+    );
+
     FFmpeg.SetExecutablesPath(ffmpegPath);
 }

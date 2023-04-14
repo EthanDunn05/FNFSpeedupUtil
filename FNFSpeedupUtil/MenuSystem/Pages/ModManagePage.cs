@@ -23,7 +23,7 @@ public class ModManagePage : IPage
             "What do do with this mod?",
             new Dictionary<string, Action>
             {
-                {"Manage a song", () => menu.ChangePage(new ChooseSongPage(ModDir, false, ModEngine))},
+                {"Manage a song", () => menu.ChangePage(new ChooseSongPage(ModDir, ModEngine))},
                 {"Restore all songs", () => menu.ChangePage(new LoadAllBackupsPage(ModDir))},
                 {"Use a different mod", menu.PreviousPage},
             })
