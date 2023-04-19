@@ -36,12 +36,12 @@ I am on discord as [@AcidAssassin#5762](https://discordapp.com/users/32974390473
 
 I am of the idea that not every piece of software in existence needs its own discord server.
 
-# For Developers:
+## For Developers:
 
-## Building
+### Building
 Build this just like any other C# program. I'll update with more detailed instructions eventually.
 
-## Contributing
+### Contributing
 You are welcome to submit pull requests, but make sure you at least follow these guidelines:
 - Follow standard C# practices and naming conventions. 
 - **Don't name things like the FNF source code does.** AKA use clear and understandable names for things.
