@@ -1,7 +1,7 @@
 ﻿using System.IO.Abstractions;
 using FNFSpeedupUtil.Console;
 using FNFSpeedupUtil.Extensions;
-using FNFSpeedupUtil.Helpers;
+using FNFSpeedupUtil.ModEngines;
 using FNFSpeedupUtil.SongManagement;
 using Spectre.Console;
 
@@ -10,17 +10,19 @@ namespace FNFSpeedupUtil.MenuSystem.Pages;
 public class LoadAllBackupsPage : IPage
 {
     private IDirectoryInfo ModDir { get; }
+    private IEngine ModEngine { get; }
 
-    public LoadAllBackupsPage(IDirectoryInfo modDir)
+    public LoadAllBackupsPage(IDirectoryInfo modDir, IEngine modEngine)
     {
         ModDir = modDir;
+        ModEngine = modEngine;
     }
 
     public void Render(Menu menu)
     {
         // Load songs
         List<ISong> songs = null!;
-        menu.Console.Notification("Loading Songs").Open(() => songs = ModDirectoryHelper.FindSongs(ModDir));
+        menu.Console.Notification("Loading Songs").Open(() => songs = ModEngine.FindSongs(ModDir));
 
         menu.Console.Progress().Start(ctx =>
         {
