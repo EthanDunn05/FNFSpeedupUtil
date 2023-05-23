@@ -31,11 +31,6 @@ no restrictions on how you may use this program as per the MIT license.
 The best place to contact me about this program is through Discord. 
 I am on discord as [@AcidAssassin#5762](https://discordapp.com/users/329743904737853440).
 
-### Does this have a Discord server?
-**No and it probably never will.**
-
-I am of the idea that not every piece of software in existence needs its own discord server.
-
 ## For Developers:
 
 ### Building
