@@ -1,6 +1,7 @@
 ﻿using FNFSpeedupUtil.JsonData.ChartData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Spectre.Console;
 
 namespace FNFSpeedupUtil.Modifier;
 
@@ -50,7 +51,7 @@ public static class ChartModifier
                 }
                 catch (Exception e)
                 {
-                    // Just ignore it
+                    // ignore
                 }
             }
         }

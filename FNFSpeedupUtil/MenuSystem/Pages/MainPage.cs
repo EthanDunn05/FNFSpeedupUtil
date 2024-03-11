@@ -14,6 +14,7 @@ public class MainPage : IPage
             { "Vanilla/KadeEngine", new VanillaEngine() },
             { "PsychEngine", new PsychEngine() },
             { "Hypno [grey](ForeverEngine)[/]", new HypnoEngine() },
+            { "Mario's Madness V2", new MarioEngine() }
         };
 
     private IFileSystem FileSystem { get; }
