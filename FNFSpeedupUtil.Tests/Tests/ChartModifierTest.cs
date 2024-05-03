@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using AutoFixture.Xunit2;
-using FNFSpeedupUtil.JsonData.ChartData;
+using FNFSpeedupUtil.JsonData.OgChartData;
 using FNFSpeedupUtil.Modifier;
 using FNFSpeedupUtil.Tests.AutoData;
 

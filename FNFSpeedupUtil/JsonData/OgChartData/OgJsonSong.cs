@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FNFSpeedupUtil.JsonData.ChartData;
+namespace FNFSpeedupUtil.JsonData.OgChartData;
 
 /// <summary>
 /// A representation of the "song" object in the chart.

@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FNFSpeedupUtil.JsonData.ChartData;
+namespace FNFSpeedupUtil.JsonData.OgChartData;
 
 /// <summary>
 /// Represents one section of a chart. Mainly used to hold notes, but might contain

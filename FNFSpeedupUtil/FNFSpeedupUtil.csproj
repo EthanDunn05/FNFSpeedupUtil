@@ -17,8 +17,4 @@
       <PackageReference Include="Xabe.FFmpeg.Downloader" Version="5.2.3" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="JsonData\WeekendChartData" />
-    </ItemGroup>
-
 </Project>

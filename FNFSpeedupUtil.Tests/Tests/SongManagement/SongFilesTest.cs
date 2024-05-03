@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
 using System.IO.Abstractions.TestingHelpers;
 using FNFSpeedupUtil.Extensions;
-using FNFSpeedupUtil.JsonData.ChartData;
+using FNFSpeedupUtil.JsonData.OgChartData;
 using FNFSpeedupUtil.SongManagement;
 
 namespace FNFSpeedupUtil.Tests.Tests.SongManagement;

@@ -14,7 +14,7 @@ public class VanillaEngineTest
         mockFs.AddDirectory("C:/assets/data/test");
         mockFs.AddDirectory("C:/assets/songs/test");
         var root = new MockDirectoryInfo(mockFs, "C:/");
-        var engine = new VanillaEngine();
+        var engine = new OgVanillaEngine();
 
         // Assert
         Assert.True(engine.ValidForMod(root));
@@ -26,7 +26,7 @@ public class VanillaEngineTest
         // Assemble
         var mockFs = MakeModFs();
         var root = new MockDirectoryInfo(mockFs, "C:/");
-        var engine = new VanillaEngine();
+        var engine = new OgVanillaEngine();
 
         // Assert
         Assert.False(engine.ValidForMod(root));
@@ -41,7 +41,7 @@ public class VanillaEngineTest
             { "C:/", new MockDirectoryData() }
         });
         var root = new MockDirectoryInfo(mockFs, "C:/");
-        var engine = new VanillaEngine();
+        var engine = new OgVanillaEngine();
 
         // Assert
         Assert.False(engine.ValidForMod(root));
@@ -55,7 +55,7 @@ public class VanillaEngineTest
         mockFs.AddDirectory("C:/assets/data/test");
         mockFs.AddDirectory("C:/assets/songs/test");
         var root = new MockDirectoryInfo(mockFs, "C:/");
-        var engine = new VanillaEngine();
+        var engine = new OgVanillaEngine();
         
         // Act
         var songs = engine.FindSongs(root);

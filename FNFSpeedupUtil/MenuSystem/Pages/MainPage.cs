@@ -11,7 +11,8 @@ public class MainPage : IPage
     private static readonly Dictionary<string, IEngine> ModEngines =
         new()
         {
-            { "Vanilla/KadeEngine", new VanillaEngine() },
+            { "Old Vanilla/KadeEngine", new OgVanillaEngine() },
+            { "Vanilla 0.3 (Weekend update)", new VanillaWeekendEngine() },
             { "PsychEngine", new PsychEngine() },
             { "Hypno [grey](ForeverEngine)[/]", new HypnoEngine() },
             { "Mario's Madness V2", new MarioEngine() }

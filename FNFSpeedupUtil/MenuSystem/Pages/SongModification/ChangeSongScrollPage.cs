@@ -1,5 +1,5 @@
 using FNFSpeedupUtil.Console;
-using FNFSpeedupUtil.JsonData.ChartData;
+using FNFSpeedupUtil.JsonData.OgChartData;
 using FNFSpeedupUtil.SongManagement;
 using Spectre.Console;
 

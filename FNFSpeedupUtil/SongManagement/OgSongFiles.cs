@@ -1,7 +1,7 @@
 using System.IO.Abstractions;
 using FNFSpeedupUtil.Extensions;
 using FNFSpeedupUtil.JsonData;
-using FNFSpeedupUtil.JsonData.ChartData;
+using FNFSpeedupUtil.JsonData.OgChartData;
 using FNFSpeedupUtil.Modifier;
 
 namespace FNFSpeedupUtil.SongManagement;
@@ -20,16 +20,24 @@ public class OgSongFiles : ISongFiles
     /// <inheritdoc />
     public IDirectoryInfo MusicFolder { get; }
     
-    /// <inheritdoc />
+    /// <summary>
+    /// The Inst.ogg file
+    /// </summary>
     public IFileInfo InstFile { get; }
     
-    /// <inheritdoc />
+    /// <summary>
+    /// The Voices.ogg file
+    /// </summary>
     public IFileInfo VoicesFile { get; }
     
-    /// <inheritdoc />
+    /// <summary>
+    /// A list of all the difficulty files
+    /// </summary>
     public List<IFileInfo> DifficultyFiles { get; }
     
-    /// <inheritdoc />
+    /// <summary>
+    /// The file which holds the events. This might not exist
+    /// </summary>
     public IFileInfo EventsFile { get; }
     
     /// <inheritdoc />
@@ -44,6 +52,54 @@ public class OgSongFiles : ISongFiles
     /// <inheritdoc />
     public IFileInfo ModificationDataFile { get; }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="name"></param>
+    /// <param name="dataFolder"></param>
+    /// <param name="musicFolder"></param>
+    public OgSongFiles(string name, IDirectoryInfo dataFolder, IDirectoryInfo musicFolder)
+    {
+        Name = name;
+        DataFolder = dataFolder;
+        MusicFolder = musicFolder;
+
+        // Initialize chart files
+        var dataFiles = dataFolder.GetFiles();
+        DifficultyFiles = dataFiles.Where(IsChartFile).ToList();
+        EventsFile = dataFolder.File("events.json");
+
+        // Initialize music files
+        InstFile = MusicFolder.File("Inst.ogg");
+        VoicesFile = MusicFolder.File("Voices.ogg");
+
+        // Initialize utility folder
+        UtilityDataFolder = DataFolder.SubDirectory("SpeedupUtilFiles");
+        if (!UtilityDataFolder.Exists) UtilityDataFolder.Create();
+        
+        // Initialize backup files
+        BackupDataFolder = UtilityDataFolder.SubDirectory("backupData");
+        BackupSongFolder = UtilityDataFolder.SubDirectory("backupSong");
+        if (!BackupDataFolder.Exists || !BackupSongFolder.Exists)
+        {
+            DataFolder.CopyTo(BackupDataFolder, false);
+            MusicFolder.CopyTo(BackupSongFolder, false);
+        }
+
+        // Initialize modification data
+        ModificationDataFile = UtilityDataFolder.File("modification-data.json");
+        if (!ModificationDataFile.Exists) ModificationDataFile.SerializeJson(new ModificationData());
+        try
+        {
+            ModificationDataFile.DeserializeJson<ModificationData>();
+        }
+        catch
+        {
+            // Default if deserialize fails
+            ModificationDataFile.SerializeJson(new ModificationData());
+        }
+    }
+    
     public async Task ModifySongSpeed(double speed, bool changePitch)
     {
         // Load the chart and track them with their file
@@ -126,54 +182,6 @@ public class OgSongFiles : ISongFiles
 
         // Reset the modification file because the data should be reset
         ModificationDataFile.SerializeJson(new ModificationData());
-    }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="name"></param>
-    /// <param name="dataFolder"></param>
-    /// <param name="musicFolder"></param>
-    public OgSongFiles(string name, IDirectoryInfo dataFolder, IDirectoryInfo musicFolder)
-    {
-        Name = name;
-        DataFolder = dataFolder;
-        MusicFolder = musicFolder;
-
-        // Initialize chart files
-        var dataFiles = dataFolder.GetFiles();
-        DifficultyFiles = dataFiles.Where(IsChartFile).ToList();
-        EventsFile = dataFolder.File("events.json");
-
-        // Initialize music files
-        InstFile = MusicFolder.File("Inst.ogg");
-        VoicesFile = MusicFolder.File("Voices.ogg");
-
-        // Initialize utility folder
-        UtilityDataFolder = DataFolder.SubDirectory("SpeedupUtilFiles");
-        if (!UtilityDataFolder.Exists) UtilityDataFolder.Create();
-        
-        // Initialize backup files
-        BackupDataFolder = UtilityDataFolder.SubDirectory("backupData");
-        BackupSongFolder = UtilityDataFolder.SubDirectory("backupSong");
-        if (!BackupDataFolder.Exists || !BackupSongFolder.Exists)
-        {
-            DataFolder.CopyTo(BackupDataFolder, false);
-            MusicFolder.CopyTo(BackupSongFolder, false);
-        }
-
-        // Initialize modification data
-        ModificationDataFile = UtilityDataFolder.File("modification-data.json");
-        if (!ModificationDataFile.Exists) ModificationDataFile.SerializeJson(new ModificationData());
-        try
-        {
-            ModificationDataFile.DeserializeJson<ModificationData>();
-        }
-        catch
-        {
-            // Default if deserialize fails
-            ModificationDataFile.SerializeJson(new ModificationData());
-        }
     }
     
     /// <summary>

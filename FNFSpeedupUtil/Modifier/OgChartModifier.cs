@@ -1,4 +1,4 @@
-﻿using FNFSpeedupUtil.JsonData.ChartData;
+﻿using FNFSpeedupUtil.JsonData.OgChartData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Spectre.Console;

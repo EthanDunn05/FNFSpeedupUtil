@@ -1,14 +1,13 @@
-using System.IO.Abstractions;
+﻿using System.IO.Abstractions;
 using FNFSpeedupUtil.SongManagement;
 
 namespace FNFSpeedupUtil.ModEngines;
 
-public class VanillaEngine : IEngine
+public class VanillaWeekendEngine : IEngine
 {
-    /// <inheritdoc/>
     public List<ISongFiles> FindSongs(IDirectoryInfo modRoot)
     {
-        var dataDir = modRoot.SubDirectory("assets").SubDirectory("data");
+        var dataDir = modRoot.SubDirectory("assets").SubDirectory("data").SubDirectory("songs");
         var songDataDirs = dataDir.GetDirectories();
 
         if (songDataDirs.Length <= 0) throw new DirectoryNotFoundException();
@@ -17,17 +16,17 @@ public class VanillaEngine : IEngine
             let songName = dir.Name
             let songDir = modRoot.SubDirectory("assets").SubDirectory("songs").SubDirectory(songName)
             where songDir.Exists
-            select new OgSongFiles(songName, dir, songDir)).Cast<ISongFiles>().ToList();
+            where dir.GetFiles().Any(f => f.Name.EndsWith("chart.json")) // Fuck you, test song
+            select new WeekendSongFiles(songName, dir, songDir)).Cast<ISongFiles>().ToList();
     }
 
-    /// <inheritdoc/>
     public bool ValidForMod(IDirectoryInfo modRoot)
     {
         try
         {
-            var hasAssetsData = modRoot.SubDirectory("assets").SubDirectory("data").Exists;
+            var hasAssetsData = modRoot.SubDirectory("assets").SubDirectory("data").SubDirectory("songs").Exists;
             var hasAssetsSongs = modRoot.SubDirectory("assets").SubDirectory("songs").Exists;
-            var hasSongs = modRoot.SubDirectory("assets").SubDirectory("data").GetDirectories().Length > 0;
+            var hasSongs = modRoot.SubDirectory("assets").SubDirectory("data").SubDirectory("songs").GetDirectories().Length > 0;
 
             return hasAssetsData && hasAssetsSongs && hasSongs;
         }

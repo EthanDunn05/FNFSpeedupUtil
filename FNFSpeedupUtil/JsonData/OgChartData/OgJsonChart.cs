@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace FNFSpeedupUtil.JsonData.ChartData;
+namespace FNFSpeedupUtil.JsonData.OgChartData;
 
 /// <summary>
 /// The root object of a chart file.
