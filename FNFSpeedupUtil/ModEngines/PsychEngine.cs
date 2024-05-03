@@ -6,7 +6,7 @@ namespace FNFSpeedupUtil.ModEngines;
 public class PsychEngine : IEngine
 {
     /// <inheritdoc/>
-    public List<ISong> FindSongs(IDirectoryInfo modRoot)
+    public List<ISongFiles> FindSongs(IDirectoryInfo modRoot)
     {
         var dataDir = modRoot.SubDirectory("mods").SubDirectory("data");
         var songDataDirs = dataDir.GetDirectories();
@@ -17,7 +17,7 @@ public class PsychEngine : IEngine
             let songName = dir.Name
             let songDir = modRoot.SubDirectory("mods").SubDirectory("songs").SubDirectory(songName)
             where songDir.Exists
-            select new Song(songName, dir, songDir)).Cast<ISong>().ToList();
+            select new OgSongFiles(songName, dir, songDir)).Cast<ISongFiles>().ToList();
     }
 
     /// <inheritdoc/>

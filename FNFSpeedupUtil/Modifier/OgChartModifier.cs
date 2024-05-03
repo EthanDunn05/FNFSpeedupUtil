@@ -8,14 +8,14 @@ namespace FNFSpeedupUtil.Modifier;
 /// <summary>
 /// Used for editing charts.
 /// </summary>
-public static class ChartModifier
+public static class OgChartModifier
 {
     /// <summary>
     /// Sets the scroll speed of a song.
     /// </summary>
     /// <param name="chart">The chart to modify</param>
     /// <param name="scrollSpeed">The new scroll speed</param>
-    public static void SetScrollSpeed(JsonChart chart, double scrollSpeed)
+    public static void SetScrollSpeed(OgJsonChart chart, double scrollSpeed)
     {
         var song = chart.Song;
         song.Speed = scrollSpeed;
@@ -25,7 +25,7 @@ public static class ChartModifier
     /// Modifies the speed of the chart by the given multiplier
     /// </summary>
     /// <param name="multiplier">The value to multiply the speed by</param>
-    public static void ModifySpeed(JsonChart chart, double multiplier)
+    public static void ModifySpeed(OgJsonChart chart, double multiplier)
     {
         var song = chart.Song;
 

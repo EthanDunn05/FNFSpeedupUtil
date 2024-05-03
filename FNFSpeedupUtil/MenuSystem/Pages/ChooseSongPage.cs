@@ -22,16 +22,16 @@ public class ChooseSongPage : IPage
     public void Render(Menu menu)
     {
         // Load songs
-        List<ISong> songs = null!;
-        var speedMod = new Dictionary<ISong, ModificationData>();
+        List<ISongFiles> songs = null!;
+        var speedMod = new Dictionary<ISongFiles, ModificationData>();
         menu.Console.Notification("Loading Songs").Open(() =>
         {
             songs = ModEngine.FindSongs(ModDir);
-            songs.ForEach(s => speedMod.Add(s, s.LoadModificationData()));
+            songs.ForEach(s => speedMod.Add(s, s.LoadModData()));
         });
 
         // Select song
-        var song = menu.Console.Prompt(new MappedSelectionPrompt<ISong>(
+        var song = menu.Console.Prompt(new MappedSelectionPrompt<ISongFiles>(
             "Choose a song to modify",
             songs.ToDictionary(s => $"{s.Name} [grey]({speedMod[s].SpeedModifier}x)[/]"))
         );

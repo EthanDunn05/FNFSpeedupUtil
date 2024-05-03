@@ -6,7 +6,7 @@ namespace FNFSpeedupUtil.ModEngines;
 public class HypnoEngine : IEngine
 {
     /// <inheritdoc/>
-    public List<ISong> FindSongs(IDirectoryInfo modRoot)
+    public List<ISongFiles> FindSongs(IDirectoryInfo modRoot)
     {
         var dataDir = modRoot.SubDirectory("assets").SubDirectory("songs");
         var songDataDirs = dataDir.GetDirectories();
@@ -15,7 +15,7 @@ public class HypnoEngine : IEngine
 
         return (from dir in songDataDirs
             let songName = dir.Name
-            select new Song(songName, dir, dir)).Cast<ISong>().ToList();
+            select new OgSongFiles(songName, dir, dir)).Cast<ISongFiles>().ToList();
     }
 
     /// <inheritdoc/>

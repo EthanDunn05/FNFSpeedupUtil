@@ -8,9 +8,9 @@ namespace FNFSpeedupUtil.MenuSystem.Pages.SongModification;
 public class ModifySongPage : IPage
 {
     private IDirectoryInfo ModDir { get; }
-    private ISong Song { get; }
+    private ISongFiles Song { get; }
 
-    public ModifySongPage(IDirectoryInfo modDir, ISong song)
+    public ModifySongPage(IDirectoryInfo modDir, ISongFiles song)
     {
         ModDir = modDir;
         Song = song;

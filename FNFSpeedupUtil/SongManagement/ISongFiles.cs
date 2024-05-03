@@ -25,26 +25,6 @@ public interface ISongFiles
     public IDirectoryInfo MusicFolder { get; }
 
     /// <summary>
-    /// The song instrumental file.
-    /// </summary>
-    public IFileInfo InstFile { get; }
-
-    /// <summary>
-    /// The song voices file.
-    /// </summary>
-    public IFileInfo VoicesFile { get; }
-
-    /// <summary>
-    /// A list of the difficulty chart files that the song has.
-    /// </summary>
-    public List<IFileInfo> DifficultyFiles { get; }
-
-    /// <summary>
-    /// The events chart file.
-    /// </summary>
-    public IFileInfo EventsFile { get; }
-
-    /// <summary>
     /// The directory which holds all of the files created and managed by this
     /// </summary>
     public IDirectoryInfo UtilityDataFolder { get; }
@@ -63,4 +43,16 @@ public interface ISongFiles
     /// The modification data file.
     /// </summary>
     public IFileInfo ModificationDataFile { get; }
+
+    public Task ModifySongSpeed(double speed, bool changePitch);
+
+    public void ModifyScrollSpeed(double scrollSpeed);
+
+    public void SaveModData(ModificationData data);
+
+    public ModificationData LoadModData();
+
+    public void SaveBackup();
+
+    public void LoadBackup();
 }

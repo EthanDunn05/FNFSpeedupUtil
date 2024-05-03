@@ -6,7 +6,7 @@ namespace FNFSpeedupUtil.ModEngines;
 public class MarioEngine : IEngine
 {
     /// <inheritdoc/>
-    public List<ISong> FindSongs(IDirectoryInfo modRoot)
+    public List<ISongFiles> FindSongs(IDirectoryInfo modRoot)
     {
         var dataDir = modRoot.SubDirectory("assets").SubDirectory("data").SubDirectory("songData");
         var songDataDirs = dataDir.GetDirectories();
@@ -17,7 +17,7 @@ public class MarioEngine : IEngine
             let songName = dir.Name
             let songDir = modRoot.SubDirectory("assets").SubDirectory("songs").SubDirectory(songName)
             where songDir.Exists
-            select new Song(songName, dir, songDir)).Cast<ISong>().ToList();
+            select new OgSongFiles(songName, dir, songDir)).Cast<ISongFiles>().ToList();
     }
 
     /// <inheritdoc/>

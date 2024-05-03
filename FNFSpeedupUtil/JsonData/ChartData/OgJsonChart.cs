@@ -7,13 +7,13 @@ namespace FNFSpeedupUtil.JsonData.ChartData;
 /// The root object of a chart file.
 /// </summary>
 [JsonObject(MemberSerialization.OptIn)]
-public class JsonChart
+public class OgJsonChart : IJsonChart
 {
     /// <summary>
     /// The song object... It holds all the data...
     /// </summary>
     [JsonProperty("song")]
-    public JsonSong Song { get; set; } = new();
+    public OgJsonSong Song { get; set; } = new();
 
     /// <summary>
     /// Additional data not represented by properties. Should always

@@ -1,13 +1,15 @@
 using System.IO.Abstractions;
 using FNFSpeedupUtil.Extensions;
 using FNFSpeedupUtil.JsonData;
+using FNFSpeedupUtil.JsonData.ChartData;
+using FNFSpeedupUtil.Modifier;
 
 namespace FNFSpeedupUtil.SongManagement;
 
 /// <summary>
 /// Holds links to all the song files. Initializes data files when created.
 /// </summary>
-public class SongFiles : ISongFiles
+public class OgSongFiles : ISongFiles
 {
     /// <inheritdoc />
     public string Name { get; }
@@ -42,13 +44,97 @@ public class SongFiles : ISongFiles
     /// <inheritdoc />
     public IFileInfo ModificationDataFile { get; }
 
+    public async Task ModifySongSpeed(double speed, bool changePitch)
+    {
+        // Load the chart and track them with their file
+        var charts = new Dictionary<IFileInfo, OgJsonChart>();
+        
+        // Load difficulty files
+        foreach (var difficultyFile in DifficultyFiles)
+        {
+            var diff = difficultyFile.DeserializeJson<OgJsonChart>();
+                charts.Add(difficultyFile, diff);
+        }
+
+        // Load events file
+        if (EventsFile.Exists)
+        {
+            charts.Add(EventsFile, EventsFile.DeserializeJson<OgJsonChart>());
+        }
+
+        // Modify the files
+        foreach (var (file, chart) in charts)
+        {
+            OgChartModifier.ModifySpeed(chart, speed);
+            file.SerializeJson(chart);
+        }
+        
+        var modifyInstTask = Task.CompletedTask;
+        if (InstFile.Exists)
+        {
+            // Create the modification task
+            modifyInstTask = MusicModifier.Modify(InstFile, speed, changePitch);
+        }
+
+        // Make a task to modify the voices if it exists
+        var modifyVoicesTask = Task.CompletedTask;
+        if (VoicesFile.Exists)
+        {
+            // Create the modification task
+            modifyVoicesTask = MusicModifier.Modify(VoicesFile, speed, changePitch);
+        }
+
+        // Wait all for processing the files in parallel
+        await Task.WhenAll(modifyInstTask, modifyVoicesTask);
+
+        // Save modification data
+        var modData = LoadModData();
+        modData.SpeedModifier *= speed;
+        SaveModData(modData);
+    }
+
+    public void ModifyScrollSpeed(double scrollSpeed)
+    {
+        foreach (var difficultyFile in DifficultyFiles)
+        {
+            var diff = difficultyFile.DeserializeJson<OgJsonChart>();
+            diff.Song.Speed = scrollSpeed;
+            difficultyFile.SerializeJson(diff);
+        }
+    }
+
+    public void SaveModData(ModificationData data)
+    {
+        ModificationDataFile.SerializeJson(data);
+    }
+
+    public ModificationData LoadModData()
+    {
+        return ModificationDataFile.DeserializeJson<ModificationData>();
+    }
+
+    public void SaveBackup()
+    {
+        DataFolder.CopyTo(BackupDataFolder, false);
+        MusicFolder.CopyTo(BackupSongFolder, false);
+    }
+
+    public void LoadBackup()
+    {
+        BackupDataFolder.CopyTo(DataFolder, false);
+        BackupSongFolder.CopyTo(MusicFolder, false);
+
+        // Reset the modification file because the data should be reset
+        ModificationDataFile.SerializeJson(new ModificationData());
+    }
+
     /// <summary>
     /// 
     /// </summary>
     /// <param name="name"></param>
     /// <param name="dataFolder"></param>
     /// <param name="musicFolder"></param>
-    public SongFiles(string name, IDirectoryInfo dataFolder, IDirectoryInfo musicFolder)
+    public OgSongFiles(string name, IDirectoryInfo dataFolder, IDirectoryInfo musicFolder)
     {
         Name = name;
         DataFolder = dataFolder;

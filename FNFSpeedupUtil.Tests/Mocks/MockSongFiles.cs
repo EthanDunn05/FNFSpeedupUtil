@@ -1,4 +1,5 @@
 using System.IO.Abstractions;
+using FNFSpeedupUtil.JsonData;
 using FNFSpeedupUtil.SongManagement;
 
 namespace FNFSpeedupUtil.Tests.Mocks;
@@ -24,4 +25,34 @@ public class MockSongFiles : ISongFiles
     public IDirectoryInfo? BackupDataFolder { get; set; }
     public IDirectoryInfo? BackupSongFolder { get; set; }
     public IFileInfo? ModificationDataFile { get; set; }
+    
+    public Task ModifySongSpeed(double speed, bool changePitch)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void ModifyScrollSpeed(double scrollSpeed)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SaveModData(ModificationData data)
+    {
+        throw new NotImplementedException();
+    }
+
+    public ModificationData LoadModData()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void SaveBackup()
+    {
+        throw new NotImplementedException();
+    }
+
+    public void LoadBackup()
+    {
+        throw new NotImplementedException();
+    }
 }

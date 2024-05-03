@@ -8,13 +8,13 @@ namespace FNFSpeedupUtil.JsonData.ChartData;
 /// other useful information.
 /// </summary>
 [JsonObject(MemberSerialization.OptIn)]
-public class JsonSection
+public class OgJsonSection
 {
     /// <summary>
     /// A list of the notes in this section.
     /// </summary>
     [JsonProperty("sectionNotes")]
-    public List<JsonNote> SectionNotes { get; set; } = new();
+    public List<OgJsonNote> SectionNotes { get; set; } = new();
     
     /// <summary>
     /// The section bpm.

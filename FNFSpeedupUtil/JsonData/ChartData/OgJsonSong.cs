@@ -8,13 +8,13 @@ namespace FNFSpeedupUtil.JsonData.ChartData;
 /// Has general data about the chart as a whole.
 /// </summary>
 [JsonObject(MemberSerialization.OptIn)]
-public class JsonSong
+public class OgJsonSong
 {
     /// <summary>
     /// A list of all the sections in the chart.
     /// </summary>
     [JsonProperty("notes")]
-    public List<JsonSection> Sections { get; set; } = new();
+    public List<OgJsonSection> Sections { get; set; } = new();
 
     /// <summary>
     /// The scroll speed of the chart.
@@ -33,7 +33,7 @@ public class JsonSong
     /// Possibly null as not all charts have this property.
     /// </summary>
     [JsonProperty("events")]
-    public List<JsonEvent>? Events { get; set; }
+    public List<OgJsonEvent>? Events { get; set; }
     
     /// <summary>
     /// Hold the data not represented by a property so that it isn't lost when modifying the chart.

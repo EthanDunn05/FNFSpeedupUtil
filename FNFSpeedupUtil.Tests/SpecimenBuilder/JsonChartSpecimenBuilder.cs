@@ -8,7 +8,7 @@ using Newtonsoft.Json.Linq;
 namespace FNFSpeedupUtil.Tests.SpecimenBuilder;
 
 /// <summary>
-/// Correctly builds a <see cref="JsonChart"/>
+/// Correctly builds a <see cref="OgJsonChart"/>
 /// </summary>
 public class JsonChartSpecimenBuilder : ISpecimenBuilder
 {
@@ -26,16 +26,16 @@ public class JsonChartSpecimenBuilder : ISpecimenBuilder
 
         if (request is Type type)
         {
-            if (type == typeof(JsonNote))
-                return new JsonNote
+            if (type == typeof(OgJsonNote))
+                return new OgJsonNote
                 {
                     context.Create<double>(),
                     context.Create<int>(),
                     context.Create<int>()
                 };
 
-            if (type == typeof(JsonEvent))
-                return new JsonEvent {context.Create<double>()};
+            if (type == typeof(OgJsonEvent))
+                return new OgJsonEvent {context.Create<double>()};
         }
 
         return new NoSpecimen();

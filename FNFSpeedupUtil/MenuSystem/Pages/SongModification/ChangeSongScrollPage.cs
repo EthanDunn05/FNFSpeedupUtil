@@ -7,9 +7,9 @@ namespace FNFSpeedupUtil.MenuSystem.Pages.SongModification;
 
 public class ChangeSongScrollPage : IPage
 {
-    private ISong Song { get; }
+    private ISongFiles Song { get; }
 
-    public ChangeSongScrollPage(ISong song)
+    public ChangeSongScrollPage(ISongFiles song)
     {
         Song = song;
     }
@@ -17,16 +17,6 @@ public class ChangeSongScrollPage : IPage
     public void Render(Menu menu)
     {
         menu.Console.MarkupLine("Change Scroll Speed");
-        var diffs = Song.LoadDifficulties();
-
-        // Select a Difficulty
-        var selectedDiff = menu.Console.Prompt(
-            new MappedSelectionPrompt<KeyValuePair<string, JsonChart>>(
-                "Which difficulty to modify?",
-                diffs.Select(s => KeyValuePair.Create(s.Key + $"({s.Value.Song.Speed})", s))
-                    .ToDictionary(k => k.Key, k => k.Value)
-            )
-        );
 
         // Prompt the new Scroll Speed
         var newSS = menu.Console.Prompt(
@@ -39,13 +29,10 @@ public class ChangeSongScrollPage : IPage
         menu.Console
             .Status()
             .Start(
-                "Modifying difficulty",
+                "Modifying difficulties",
                 ctx =>
                 {
-                    selectedDiff.Value.Song.Speed = newSS;
-
-                    ctx.Status("Saving Difficulty");
-                    Song.SaveDifficulty(selectedDiff.Key, selectedDiff.Value);
+                    Song.ModifyScrollSpeed(newSS);
                 }
             );
 

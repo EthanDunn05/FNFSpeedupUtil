@@ -21,7 +21,7 @@ public class SongFilesTest
         var (data, songs) = MakeSong(mod, "testSong");
 
         // Act
-        var testSong = new SongFiles("testSong", data, songs);
+        var testSong = new OgSongFiles("testSong", data, songs);
 
         // Assert
         Assert.Equal("testSong", testSong.Name);
@@ -39,13 +39,13 @@ public class SongFilesTest
 
         var expectedDiffs = new List<string>
         {
-            AddDifficulty(data, "test1", new JsonChart()).FullName,
-            AddDifficulty(data, "test2", new JsonChart()).FullName,
-            AddDifficulty(data, "", new JsonChart()).FullName
+            AddDifficulty(data, "test1", new OgJsonChart()).FullName,
+            AddDifficulty(data, "test2", new OgJsonChart()).FullName,
+            AddDifficulty(data, "", new OgJsonChart()).FullName
         };
 
         // Act
-        var testSong = new SongFiles("testSong", data, songs);
+        var testSong = new OgSongFiles("testSong", data, songs);
         var testDiffs = testSong.DifficultyFiles.Select(f => f.FullName);
 
         // Assert
@@ -59,10 +59,10 @@ public class SongFilesTest
         var fs = new MockFileSystem();
         var mod = MakeModFolder(fs, "testMod");
         var (data, songs) = MakeSong(mod, "testSong");
-        var expectedPath = AddEvents(data, new JsonChart()).FullName;
+        var expectedPath = AddEvents(data, new OgJsonChart()).FullName;
 
         // Act
-        var testSong = new SongFiles("testSong", data, songs);
+        var testSong = new OgSongFiles("testSong", data, songs);
 
         // Assert
         Assert.NotNull(testSong.EventsFile);
@@ -81,7 +81,7 @@ public class SongFilesTest
         var expectedVoicesPath = AddVoices(songs).FullName;
 
         // Act
-        var testSong = new SongFiles("testSong", data, songs);
+        var testSong = new OgSongFiles("testSong", data, songs);
 
         // Assert
         Assert.Equal(expectedInstPath, testSong.InstFile.FullName);
@@ -97,7 +97,7 @@ public class SongFilesTest
         var (data, songs) = MakeSong(mod, "testSong");
         
         // Act
-        var testSong = new SongFiles("testSong", data, songs);
+        var testSong = new OgSongFiles("testSong", data, songs);
         var mockUtilityFile = data.SubDirectory(UtilDirName);
 
         // Assert
@@ -113,7 +113,7 @@ public class SongFilesTest
         var (data, songs) = MakeSong(mod, "testSong");
         
         // Act
-        new SongFiles("testSong", data, songs);
+        new OgSongFiles("testSong", data, songs);
         var mockModificationData = data
             .SubDirectory(UtilDirName)
             .File("modification-data.json");
@@ -130,11 +130,11 @@ public class SongFilesTest
         var mod = MakeModFolder(fs, "testMod");
         var (data, songs) = MakeSong(mod, "testSong");
         
-        AddDifficulty(data, "test", new JsonChart());
-        AddEvents(data, new JsonChart());
+        AddDifficulty(data, "test", new OgJsonChart());
+        AddEvents(data, new OgJsonChart());
 
         // Act
-        var testSong = new SongFiles("testSong", data, songs);
+        var testSong = new OgSongFiles("testSong", data, songs);
 
         var backupDir = data
             .SubDirectory(UtilDirName)
@@ -161,7 +161,7 @@ public class SongFilesTest
         AddVoices(songs);
 
         // Act
-        var testSong = new SongFiles("testSong", data, songs);
+        var testSong = new OgSongFiles("testSong", data, songs);
 
         var backupDir = data
             .SubDirectory(UtilDirName)
@@ -195,7 +195,7 @@ public class SongFilesTest
         );
     }
     
-    private IFileInfo AddDifficulty(IDirectoryInfo dataDir, string difficultyName, JsonChart chart)
+    private IFileInfo AddDifficulty(IDirectoryInfo dataDir, string difficultyName, OgJsonChart chart)
     {
         var name = dataDir.Name;
         var fileName = difficultyName != ""
@@ -208,7 +208,7 @@ public class SongFilesTest
         return chartFile;
     }
     
-    private MockFileInfo AddEvents(IDirectoryInfo dataDir, JsonChart chart)
+    private MockFileInfo AddEvents(IDirectoryInfo dataDir, OgJsonChart chart)
     {
         var chartFile = dataDir.File("events.json");
         chartFile.Create();

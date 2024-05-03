@@ -10,7 +10,7 @@ public interface IEngine
     /// </summary>
     /// <param name="modRoot">The root directory of the mod</param>
     /// <returns>A list of the songs found.</returns>
-    public List<ISong> FindSongs(IDirectoryInfo modRoot);
+    public List<ISongFiles> FindSongs(IDirectoryInfo modRoot);
 
     /// <summary>
     /// Determines if this mod engine is a valid option for the given mod Directory

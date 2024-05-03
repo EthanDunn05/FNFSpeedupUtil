@@ -8,7 +8,7 @@ namespace FNFSpeedupUtil.JsonData.ChartData;
 /// is an IEnumerable to represent that.
 /// </summary>
 [JsonArray]
-public class JsonEvent : List<JToken>
+public class OgJsonEvent : List<JToken>
 {
     /// <summary>
     /// The time the event triggers

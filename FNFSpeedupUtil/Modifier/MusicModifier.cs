@@ -10,7 +10,7 @@ public static class MusicModifier
     /// 
     /// </summary>
     /// <param name="speedModification"></param>
-    public static async Task Modify(IFileInfo songFile, double speedModification, bool changePitch, ConversionProgressEventHandler onProgress)
+    public static async Task Modify(IFileInfo songFile, double speedModification, bool changePitch)
     {
         // Move file to temp location
         var originalPath = songFile.FullName;
@@ -39,8 +39,6 @@ public static class MusicModifier
                 $"-af \"asetrate={audio.SampleRate * speedModification},aresample={audio.SampleRate}\"");
         }
 
-        conversion.OnProgress += onProgress;
-        
         // Do the conversion
         var result = await conversion.Start();
 

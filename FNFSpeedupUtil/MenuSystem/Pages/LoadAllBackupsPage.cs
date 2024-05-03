@@ -21,7 +21,7 @@ public class LoadAllBackupsPage : IPage
     public void Render(Menu menu)
     {
         // Load songs
-        List<ISong> songs = null!;
+        List<ISongFiles> songs = null!;
         menu.Console.Notification("Loading Songs").Open(() => songs = ModEngine.FindSongs(ModDir));
 
         menu.Console.Progress().Start(ctx =>
