@@ -16,7 +16,7 @@ public class VanillaWeekendEngine : IEngine
             let songName = dir.Name
             let songDir = modRoot.SubDirectory("assets").SubDirectory("songs").SubDirectory(songName)
             where songDir.Exists
-            where dir.GetFiles().Any(f => f.Name.EndsWith("chart.json")) // Fuck you, test song
+            where dir.GetFiles().Any(f => f.Name.Contains("chart.json")) // Fuck you, test song
             select new WeekendSongFiles(songName, dir, songDir)).Cast<ISongFiles>().ToList();
     }
 

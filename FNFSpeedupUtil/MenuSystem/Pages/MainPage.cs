@@ -15,7 +15,8 @@ public class MainPage : IPage
             { "Vanilla 0.3 (Weekend update)", new VanillaWeekendEngine() },
             { "PsychEngine", new PsychEngine() },
             { "Hypno [grey](ForeverEngine)[/]", new HypnoEngine() },
-            { "Mario's Madness V2", new MarioEngine() }
+            { "Mario's Madness V2", new MarioEngine() },
+            { "Gorefield", new GorefieldEngine() }
         };
 
     private IFileSystem FileSystem { get; }

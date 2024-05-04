@@ -109,7 +109,15 @@ public class WeekendSongFiles : ISongFiles
 
     public void ModifyScrollSpeed(double scrollSpeed)
     {
-        throw new NotImplementedException();
+        foreach (var file in ChartFiles)
+        {
+            var chart = file.DeserializeJson<WeekendJsonChart>();
+            foreach (var entry in chart.ScrollSpeeds.ScrollSpeeds)
+            {
+                chart.ScrollSpeeds.ScrollSpeeds[entry.Key] = scrollSpeed;
+            }
+            file.SerializeJson(chart);
+        }
     }
 
     public void SaveModData(ModificationData data)

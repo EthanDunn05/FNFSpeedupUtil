@@ -9,7 +9,6 @@
 
 - There is no built in way to change the speed of animations. This can cause gameplay to be obstructed
   from an animation that hides gameplay lasting too long.
-- Vs Gorefield V2 does not work. There are no plans to support it because the filesystem is fundamentally different.
 
 ## FAQ
 

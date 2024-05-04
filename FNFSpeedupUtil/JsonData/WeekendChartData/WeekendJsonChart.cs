@@ -18,6 +18,9 @@ public class WeekendJsonChart
     [JsonProperty("notes")]
     public Dictionary<string, List<WeekendJsonNote>> Notes { get; set; }
     
+    [JsonProperty("scrollSpeed")]
+    public WeekendJsonScrollSpeeds ScrollSpeeds { get; set; }
+    
     /// <summary>
     /// Additional data not represented by properties. For example, the song version
     /// </summary>
