@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace FNFSpeedupUtil.JsonData.WeekendChartData;
 
@@ -6,5 +7,5 @@ namespace FNFSpeedupUtil.JsonData.WeekendChartData;
 public class WeekendJsonScrollSpeeds
 {
     [JsonExtensionData]
-    public Dictionary<string, double> ScrollSpeeds { get; set; } = new();
+    public Dictionary<string, JToken> ScrollSpeeds { get; set; } = new();
 }
