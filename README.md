@@ -1,5 +1,7 @@
 # FNF Speedup Util
 
+[![]("https://gamebanana.com/tools/embeddables/16743?type=large")](https://gamebanana.com/tools/16743)
+
 ## Installation
 1. Download the .zip file from the [releases](https://github.com/EthanDunn05/FNFSpeedupUtil/releases)
 2. Extract the .zip file to a new folder using a tool like 7Zip or WinZip
